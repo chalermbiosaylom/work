@@ -1,0 +1,102 @@
+[
+  {
+    "name": "ics_modbus_port_502",
+    "evidence": [
+      "port 502 reachable",
+      "prompt contains coil/register"
+    ],
+    "expected_skill": "/ctf-ics",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_backup": "/ctf-forensics"
+  },
+  {
+    "name": "enip_port_44818",
+    "evidence": [
+      "port 44818 reachable",
+      "prompt contains CIP or ENIP"
+    ],
+    "expected_skill": "/ctf-ics",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_backup": "/ctf-reverse"
+  },
+  {
+    "name": "pcap_industrial_trace",
+    "evidence": [
+      "file traffic.pcapng",
+      "protocol appears modbus"
+    ],
+    "expected_skill": "/ctf-forensics",
+    "expected_primary_mcp": "sharkmcp",
+    "expected_backup": "/ctf-ics"
+  },
+  {
+    "name": "web_jwt",
+    "evidence": [
+      "http endpoint",
+      "jwt token in cookie"
+    ],
+    "expected_skill": "/ctf-web",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_backup": "/ctf-crypto"
+  },
+  {
+    "name": "elf_remote_nc",
+    "evidence": [
+      "ELF binary",
+      "remote nc service"
+    ],
+    "expected_skill": "/ctf-pwn",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_backup": "/ctf-reverse"
+  },
+  {
+    "name": "obfuscated_wasm",
+    "evidence": [
+      "javascript + wasm",
+      "client-side validation"
+    ],
+    "expected_skill": "/ctf-reverse",
+    "expected_primary_mcp": "ghidramcp",
+    "expected_backup": "/ctf-web"
+  },
+  {
+    "name": "rsa_numbers",
+    "evidence": [
+      "large N/e/c",
+      "prompt says RSA"
+    ],
+    "expected_skill": "/ctf-crypto",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_backup": "/ctf-misc"
+  },
+  {
+    "name": "memory_dump",
+    "evidence": [
+      "file dump.raw",
+      "process list extraction needed"
+    ],
+    "expected_skill": "/ctf-forensics",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_backup": "/ctf-malware"
+  },
+  {
+    "name": "restricted_shell_jail",
+    "evidence": [
+      "restricted eval prompt",
+      "input filtering"
+    ],
+    "expected_skill": "/ctf-misc",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_backup": "/ctf-pwn"
+  },
+  {
+    "name": "post_exploit_credentials",
+    "evidence": [
+      "ssh credentials provided",
+      "goal is privesc"
+    ],
+    "expected_skill": "/ctf-os-exploit",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_backup": "/ctf-web"
+  }
+]

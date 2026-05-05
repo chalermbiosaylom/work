@@ -1,0 +1,4 @@
+# Install inside Sage environment when needed
+fpylll
+pycryptodome
+sympy

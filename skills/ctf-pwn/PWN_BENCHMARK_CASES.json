@@ -1,0 +1,82 @@
+[
+  {
+    "name": "ret2win_no_pie",
+    "evidence": ["gets", "no pie", "no canary", "win()"],
+    "expected_track": "bof-ret2win",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "run-checksec-and-find-offset"
+  },
+  {
+    "name": "ret2libc_with_puts_leak",
+    "evidence": ["puts@got leak", "libc", "system", "binsh"],
+    "expected_track": "ret2libc",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "build-two-stage-leak-chain"
+  },
+  {
+    "name": "printf_user_input",
+    "evidence": ["printf(user_input)", "%p", "format string"],
+    "expected_track": "format-string",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "find-format-offset-and-leak"
+  },
+  {
+    "name": "heap_uaf_menu",
+    "evidence": ["malloc", "free", "use after free", "menu"],
+    "expected_track": "heap-uaf",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "map-heap-primitives-and-target"
+  },
+  {
+    "name": "syscall_only_gadgets",
+    "evidence": ["syscall", "few gadgets", "sigreturn", "rax control"],
+    "expected_track": "srop-syscall",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "prepare-sigreturn-frame"
+  },
+  {
+    "name": "seccomp_filtered",
+    "evidence": ["seccomp", "openat", "orw", "sandbox"],
+    "expected_track": "seccomp-bypass",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "design-orw-rop-chain"
+  },
+  {
+    "name": "race_timing_window",
+    "evidence": ["pthread", "sleep", "race", "toctou"],
+    "expected_track": "race-condition",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "stabilize-race-harness"
+  },
+  {
+    "name": "remote_blind_pwn",
+    "evidence": ["remote only", "no crash output", "blind"],
+    "expected_track": "blind-remote-pwn",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "build-timeout-safe-probe-loop"
+  },
+  {
+    "name": "kernel_rop",
+    "evidence": ["/dev", "kernel", "smep", "kaslr"],
+    "expected_track": "kernel-pwn",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-reverse",
+    "expected_first_action": "verify-kernel-primitives"
+  },
+  {
+    "name": "sandbox_escape_vm",
+    "evidence": ["custom vm", "restricted", "escape", "interpreter"],
+    "expected_track": "sandbox-escape",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-reverse",
+    "expected_first_action": "diff-host-vs-sandbox-capabilities"
+  }
+]

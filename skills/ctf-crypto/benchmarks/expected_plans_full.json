@@ -1,0 +1,14 @@
+{
+  "rsa_small_e": "AttackPlan: attack=small-e | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=5",
+  "rsa_wiener": "AttackPlan: attack=wiener | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=7",
+  "rsa_close_primes": "AttackPlan: attack=fermat | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=6",
+  "ecc_anomalous": "AttackPlan: attack=smart | tool=sage | solver=program | supplemental_mcp=none | handoff_action=none | confidence=6",
+  "lwe_cvp": "AttackPlan: attack=lwe-cvp | tool=sage | solver=program | supplemental_mcp=none | handoff_action=none | confidence=8",
+  "cbc_padding_oracle": "AttackPlan: attack=padding-oracle | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=5",
+  "mt19937_outputs": "AttackPlan: attack=mt-state-recovery | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=7",
+  "unknown_multilayer": "AttackPlan: attack=decode-chain | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=8",
+  "rsa_common_modulus": "AttackPlan: attack=common-modulus | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=6",
+  "rsa_partial_prime": "AttackPlan: attack=coppersmith | tool=sage | solver=program | supplemental_mcp=none | handoff_action=none | confidence=8",
+  "explicit_attack_override": "AttackPlan: attack=smart | tool=sage | solver=program | supplemental_mcp=none | handoff_action=none | confidence=9",
+  "no_hint_defaults_decode_chain": "AttackPlan: attack=decode-chain | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=4"
+}

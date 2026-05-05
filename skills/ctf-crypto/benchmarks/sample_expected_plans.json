@@ -1,0 +1,6 @@
+{
+  "rsa_small_e_basic": "AttackPlan: attack=small-e | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=9",
+  "decode_chain_base64_flag": "AttackPlan: attack=decode-chain | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=9",
+  "preflight_decoy_enrichment": "AttackPlan: attack=small-e | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=9",
+  "common_modulus_basic": "AttackPlan: attack=common-modulus | tool=python | solver=program | supplemental_mcp=none | handoff_action=none | confidence=9"
+}

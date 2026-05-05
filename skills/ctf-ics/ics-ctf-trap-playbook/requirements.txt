@@ -1,0 +1,4 @@
+pymodbus==3.6.4
+cpppo==4.4.2
+greenery==4.2.2
+pycomm3==1.2.14

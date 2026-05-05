@@ -1,0 +1,82 @@
+[
+  {
+    "name": "jwt_none_alg",
+    "evidence": ["jwt token", "alg none", "admin bypass"],
+    "expected_track": "jwt-auth",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_first_action": "handoff-web-crypto-token-analysis"
+  },
+  {
+    "name": "blind_sql_login",
+    "evidence": ["login form", "sql syntax error", "boolean response diff"],
+    "expected_track": "sqli",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "confirm-injection-point"
+  },
+  {
+    "name": "multipart_upload_shell",
+    "evidence": ["file upload", "multipart", "extension filter"],
+    "expected_track": "upload-rce",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-os-exploit",
+    "expected_first_action": "handoff-web-os-shell-stabilization"
+  },
+  {
+    "name": "template_math_eval",
+    "evidence": ["{{7*7}}", "user input rendered", "jinja hint"],
+    "expected_track": "ssti",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "probe-template-engine"
+  },
+  {
+    "name": "path_traversal_download",
+    "evidence": ["download endpoint", "../", "/etc/passwd"],
+    "expected_track": "lfi-traversal",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "test-traversal-variants"
+  },
+  {
+    "name": "xss_session_steal",
+    "evidence": ["reflected input", "script executed", "cookie"],
+    "expected_track": "xss-client",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "burp-mcp",
+    "expected_first_action": "verify-context-and-sink"
+  },
+  {
+    "name": "ssrf_metadata",
+    "evidence": ["url fetcher", "internal host", "169.254.169.254"],
+    "expected_track": "ssrf",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "probe-internal-targets"
+  },
+  {
+    "name": "csrf_state_change",
+    "evidence": ["state change POST", "no token", "cross-site"],
+    "expected_track": "csrf",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "burp-mcp",
+    "expected_first_action": "capture-and-replay-form"
+  },
+  {
+    "name": "graphql_introspection",
+    "evidence": ["/graphql", "introspection", "query depth"],
+    "expected_track": "graphql",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "enumerate-schema"
+  },
+  {
+    "name": "deserialization_cookie",
+    "evidence": ["serialized object", "base64 cookie", "gadget chain"],
+    "expected_track": "deserialization",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "",
+    "expected_first_action": "identify-serializer"
+  }
+]

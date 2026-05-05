@@ -1,0 +1,1078 @@
+# RTAF Crypto Anti-Trap Playbook (Execution Mode)
+
+เวอร์ชันนี้คือโหมดใช้งานจริงระหว่างแข่ง: สั้น, deterministic, และกันหลุมพราง
+
+## 0) Non-Negotiable Rules
+
+1. Assume ทุกอย่างอาจเป็น decoy จนกว่าจะพิสูจน์ได้
+2. ห้ามเชื่อค่าตัวแรกที่เห็น (`n,e,c`, key, endpoint, hint)
+3. ทุก candidate flag ต้องผ่าน provenance check ก่อน submit
+4. ถ้า error เดิมซ้ำ 3 ครั้ง ให้ pivot ทันที
+5. output flag ให้ทันทีเมื่อยืนยันแล้ว:
+
+[FLAG] <raw_flag>
+[CLEAN] <sanitized_flag>
+[METHOD] <one-line extraction command>
+
+## 1) Trap Taxonomy (Quick)
+
+- Context confusion: ค่าจริงไม่ใช่ค่าที่ประกาศบนสุด
+- Red herring: เหมือน small-e/Wiener ได้ แต่จริง ๆ ใส่ padding/เงื่อนไขเพิ่ม
+- Fake flag injection: มี flag ปลอมให้ regex ติดก่อน
+- Multi-stage gate: ต้องผ่าน state/captcha/time window ก่อนถึงข้อมูลจริง
+- Encoding maze: base64/hex/reverse/xor ซ้อนชั้น
+- Dependency trap: โค้ดใช้เวอร์ชัน/tool เฉพาะ
+
+## 2) Anti-Trap Execution Pipeline
+
+Step A: Artifact sanity
+- ตรวจขนาดไฟล์ก่อนอ่านทั้งก้อน
+- ดึง candidate ทั้งหมดของ `n,e,c` (ไม่ใช่ตัวแรกตัวเดียว)
+- เช็ก validity: `c < n`, `gcd(e,n)=1`, bit-length สมเหตุผล
+
+Step B: Attack routing (evidence-first)
+- route จากหลักฐานรวม ไม่ใช่ pattern เดียว (เช่นเห็น `e=3` อย่างเดียวห้ามสรุป)
+- ถ้ามีคำว่า partial bits/small roots -> Coppersmith/Sage ก่อน
+
+Step C: Decode + verify
+- decode chain แบบมี score/provenance
+- wrapper flag มาก่อน raw hash token
+- หากเจอหลาย candidate ให้เลือกตัวที่มีหลักฐาน chain ครบสุด
+
+Step D: Submission guard
+- กัน fake flag: verify จาก source + method reproducible 1 คำสั่ง
+- บันทึกเหตุผล reject ของ decoy ทุกตัว
+
+## 3) Programming Mode (ตามที่ขอ)
+
+ใช้เมื่อโจทย์เป็น script-heavy / custom logic / implementation trap
+
+### 3.1 Programming Anti-Trap Checklist
+
+1. Parse, don’t trust comments
+- comment อาจหลอกว่า AES แต่โค้ดจริงเป็น custom cipher
+
+2. Build minimal oracle tests
+- เขียน unit probe สั้น ๆ ตรวจสมบัติจริง (bijection? padding? randomness?)
+
+3. Deterministic harness ก่อน brute force
+- fix seed / timeout / retries / logging เพื่อแยก bug กับ trap
+
+4. Dual-path validation
+- อย่างน้อย 2 วิธีต้องยืนยันคำตอบเดียวกัน (math check + decode check)
+
+5. Fail-fast policy
+- timeout endpoint: ลด rate/parallel
+- error ซ้ำ 3 ครั้ง: เปลี่ยนสมมติฐาน ไม่วนที่เดิม
+
+### 3.2 Programming Template (One-Screen)
+
+```python
+# 1) Collect all candidates (no first-value trust)
+candidates = collect_candidates(source)
+
+# 2) Sanity filter
+valid = [x for x in candidates if is_valid_rsa_tuple(x)]
+
+# 3) Score & route by evidence
+plan = route_attack(valid, hints, behavior)
+
+# 4) Run deterministic solver
+result = run_solver(plan, timeout=5, retries=2)
+
+# 5) Decode chain with provenance
+decoded = decode_with_trace(result.bytes)
+
+# 6) Verify candidate flags
+flag = select_verified_flag(decoded.candidates)
+
+# 7) Emit competition format
+emit_flag(flag, method=decoded.method)
+```
+
+### 3.3 What to avoid in Programming Mode
+
+- เขียนสคริปต์ยาวก่อนพิสูจน์ hypothesis
+- brute force ทั้ง space โดยไม่มี pruning
+- submit ทันทีเมื่อ regex ติดครั้งแรก
+- ปน stdout log กับ JSON machine output
+
+## 4) Fast Decision Matrix
+
+- เจอ `e=3` + message เล็ก + no padding evidence -> small-e
+- เจอ “same N, different e” -> common modulus
+- เจอ “partial bits / small roots” -> coppersmith (Sage)
+- เจอ “anomalous / ECC order = p” -> smart attack (Sage)
+- ไม่มี hint ชัด + multilayer data -> decode-chain with scoring
+
+## 5) Definition of Done (Anti-Trap)
+
+ถือว่าจบเมื่อครบทุกข้อ:
+- มี evidence chain จาก input -> transform -> output
+- มี one-line reproduce method
+- flag candidate ผ่าน provenance validation
+- ไม่มี error เดิมซ้ำโดยไม่ pivot
+
+---
+
+ด้านล่างคือ research notes และตัวอย่างกับดักเชิงลึก (เก็บไว้เป็น reference)
+
+🎯 Anti-AI Traps ในโจทย์ Crypto CTF (มุมมองผู้สร้างโจทย์)
+🧠 หลักการหลอก AI Automation
+1. Context Confusion (ทำให้ AI งง)
+# Trap: ข้อมูลปลอมในโค้ด
+n = 123456789  # This is NOT the real modulus
+e = 65537      # Decoy exponent
+c = 999999     # Fake ciphertext
+
+# Real values hidden in comments or encoded
+# n = int("0x" + "9b7e1c3d...", 16)  # Real N
+# Or embedded in image EXIF, DNS TXT records, etc.
+
+ทำไมได้ผล:
+
+AI มักอ่าน code แบบ linear จากบนลงล่าง
+จะเลือกตัวแปรแรกที่เจอ ไม่ได้วิเคราะห์ context ลึก
+
+
+2. Multi-Stage Challenges (แยกขั้นตอน)
+Stage 1: Solve CAPTCHA (ต้องใช้คน)
+    ↓
+Stage 2: Crypto puzzle (AI solve ได้)
+    ↓
+Stage 3: Physical challenge (ต้องไปที่จุดหมาย)
+    ↓
+Stage 4: Time-based OTP (ต้อง sync เวลาจริง)
+
+ทำไมได้ผล:
+
+AI ไม่มี physical presence
+ไม่สามารถทำ CAPTCHA แบบ interactive
+Time-based challenge ต้องการ real-time coordination
+
+
+3. Intentional Red Herrings (ข้อมูลหลอก)
+# Trap: ให้ข้อมูลที่ดูเหมือนจะใช้ได้
+def weak_rsa():
+    # AI จะเห็น e=3 และคิดว่าเป็น small-e attack
+    e = 3
+    n = generate_large_prime() * generate_large_prime()
+    
+    # แต่จริงๆ message ถูก pad แล้ว (small-e ใช้ไม่ได้)
+    m_padded = pad_oaep(flag, n.bit_length())
+    c = pow(m_padded, e, n)
+    
+    # AI จะเสียเวลาลอง small-e attack ซึ่งจะล้มเหลว
+    return n, e, c
+
+ทำไมได้ผล:
+
+AI pattern matching จะเห็น e=3 แล้วสรุปเร็วเกินไป
+ไม่ได้อ่านโค้ดทั้งหมดก่อนตัดสินใจ
+
+
+4. Encoding Hell (เข้ารหัสซ้อนกัน)
+# Layer 1: Base64
+# Layer 2: Hex
+# Layer 3: ROT13
+# Layer 4: Custom substitution
+# Layer 5: XOR with key from Layer 2
+# Layer 6: AES-CBC with IV from Layer 4
+# Layer 7: Flag is in Thai language (ภาษาไทย)
+
+# AI จะต้อง:
+# 1. Detect encoding chain (ยาก)
+# 2. Decode ทีละ layer โดยไม่รู้ลำดับ (ยากมาก)
+# 3. Handle Thai Unicode (AI บางตัวไม่รองรับ)
+
+ทำไมได้ผล:
+
+AI ต้องลอง permutation ทั้งหมด (7! = 5,040 combinations)
+Thai language detection ต้องใช้ NLP model พิเศษ
+
+
+5. Human-Only Verification (ต้องใช้คน)
+# Challenge: แก้ crypto แล้วได้ภาพ QR code
+# แต่ QR code นั้นต้อง:
+# 1. Print ออกมา
+# 2. ถ่ายรูปกับ landmark ที่กำหนด
+# 3. Upload ภาพพร้อม GPS coordinates
+# 4. ภาพต้องมี timestamp ภายใน 1 ชั่วโมง
+
+# AI ทำไม่ได้เพราะ:
+# - ไม่มี physical body
+# - ไม่สามารถไปยัง location จริง
+
+
+6. Timing-Based Traps
+# Trap: Oracle ที่ตอบช้าเมื่อถูกโจมตีแบบ automated
+import time
+
+def oracle(ciphertext):
+    # Detect automation by request rate
+    if request_rate > 10/second:
+        time.sleep(random.randint(30, 60))  # Slow down AI
+        return "Rate limit exceeded"
+    
+    # Normal response for human
+    return decrypt_and_check(ciphertext)
+
+# AI จะ:
+# - ต้องรอนาน (timeout)
+# - หรือต้อง implement rate limiting (ซับซ้อน)
+
+
+7. Partial Information Leakage
+# Trap: ให้ข้อมูลไม่ครบ
+n = 0x9b7e1c3d...  # ให้แค่ 50% ของ bits
+e = 65537
+c = 0x1a2b3c4d...  # ให้ครบ
+
+# Missing information ต้องหาจาก:
+# - Network traffic capture (pcap file)
+# - Image steganography
+# - Audio file spectrogram
+# - Git commit history
+
+# AI จะ:
+# - ไม่รู้ว่าข้อมูลไม่ครบ
+# - พยายาม solve ด้วยข้อมูลที่มี (ล้มเหลว)
+
+
+8. Fake Flag Injection
+# Trap: ใส่ flag ปลอมหลายตัว
+fake_flags = [
+    "coc2026{this_is_fake_flag_1}",
+    "coc2026{nice_try_but_wrong}",
+    "coc2026{almost_there_keep_trying}",
+    "coc2026{you_are_on_right_track}",  # ← AI จะส่งตัวนี้
+]
+
+real_flag = "coc2026{" + sha256(secret_key).hex()[:32] + "}"
+
+# AI จะ:
+# - เจอ fake flag ก่อน (regex match)
+# - Submit ทันที (ไม่ได้ verify)
+# - เสีย submission quota
+
+
+9. Dependency Hell
+# Trap: ต้องใช้ tool เฉพาะที่หายาก
+# ต้องใช้:
+# - SageMath 9.5 (เวอร์ชันเก่า, ไม่ใช่ latest)
+# - fpylll compiled with specific flags
+# - Custom patched version of gmpy2
+# - Library ที่ต้อง compile จาก source
+
+# AI จะ:
+# - ใช้ default installation (ล้มเหลว)
+# - ไม่รู้ว่าต้อง downgrade version
+
+
+10. Adversarial Examples
+# Trap: ใส่ comment ที่หลอก AI
+def encrypt(plaintext):
+    # This is AES-256-CBC encryption
+    # Key is derived from password using PBKDF2
+    # IV is randomly generated
+    
+    # แต่จริงๆ เป็น custom cipher
+    key = custom_key_derivation(password)  # ไม่ใช่ PBKDF2
+    return custom_cipher(plaintext, key)   # ไม่ใช่ AES
+
+# AI จะ:
+# - อ่าน comment แล้วเชื่อ
+# - ใช้ AES attack (ล้มเหลว)
+
+
+ Anti-AI Defense Checklist (สำหรับผู้สร้างโจทย์)
+Level 1: Basic (ชะลอ AI 10-30 นาที)
+
+ ใส่ fake parameters ในโค้ด
+ ใช้ encoding ซ้อน 3-5 layers
+ ซ่อนข้อมูลบางส่วนใน comments
+
+Level 2: Intermediate (ชะลอ AI 1-3 ชั่วโมง)
+
+ Multi-stage challenge (3+ stages)
+ Timing-based oracle with rate limiting
+ Partial information ต้องหาจากหลายแหล่ง
+ ใช้ Thai language หรือ Unicode tricks
+
+Level 3: Advanced (ชะลอ AI 6-12 ชั่วโมง)
+
+ Physical verification required
+ Custom crypto primitive (ไม่ใช่ standard)
+ Dependency on specific tool versions
+ Adversarial comments ที่หลอก AI
+
+Level 4: Expert (AI solve ไม่ได้เลย)
+
+ Human-only CAPTCHA at critical steps
+ Real-world location verification
+ Time-window challenge (ต้องทำภายใน 1 ชม.)
+ Team coordination required (2+ คน)
+
+
+ ตัวอย่างโจทย์ Anti-AI (RTAF-CTF-2026 Style)
+"""
+Challenge: "The Royal Cipher"
+Category: Crypto (Hard)
+Points: 500
+
+Description:
+พระราชาทรงพระราชทานรหัสลับแก่ทหารหาญ
+ผู้ที่ถอดรหัสได้จะได้รับพระราชทานธงชัย
+
+Hint: ธงชัยอยู่ที่พระราชวังเก่า เวลา 14:00 น.
+"""
+
+# Stage 1: Crypto puzzle (AI solve ได้)
+n = 0x9b7e1c3d5a2f8e4b6c9a1d3e5f7b8c2a4e6f8a1c3d5e7f9b1c3d5e7f9b1c3d5e
+e = 3
+c = 0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+
+# AI จะ solve ได้ plaintext: "GPS: 13.7563,100.5018"
+
+# Stage 2: Physical verification (AI ทำไม่ได้)
+# ต้องไปที่ Grand Palace (13.7563°N, 100.5018°E)
+# เวลา 14:00 น. วันที่แข่งขัน
+# ถ่ายรูปกับป้าย "RTAF-CTF-2026"
+# Upload ภาพพร้อม GPS + timestamp
+
+# Stage 3: Human verification
+# Staff ที่จุดนั้นจะให้ QR code
+# Scan แล้วได้ final flag
+
+# AI จะติดที่ Stage 2 (ไม่มี physical presence)
+
+
+ Effectiveness Score
+
+
+
+Technique
+AI Block Rate
+Human Difficulty
+Recommended
+
+
+
+
+Context Confusion
+60%
+Low
+✅ Yes
+
+
+Multi-Stage
+80%
+Medium
+✅ Yes
+
+
+Red Herrings
+50%
+Low
+⚠️ Maybe
+
+
+Encoding Hell
+70%
+High
+⚠️ Maybe
+
+
+Human Verification
+100%
+Low
+✅ Yes
+
+
+Timing Traps
+65%
+Medium
+✅ Yes
+
+
+Partial Info
+75%
+High
+⚠️ Maybe
+
+
+Fake Flags
+85%
+Low
+✅ Yes
+
+
+Dependency Hell
+90%
+Very High
+❌ No
+
+
+Adversarial Examples
+55%
+Low
+⚠️ Maybe
+
+
+
+
+🎯 Best Practices สำหรับ RTAF-CTF-2026
+
+ใช้ Multi-Stage - แยก crypto + physical verification
+Thai Language - ใช้ภาษาไทยในส่วนสำคัญ
+Time Windows - กำหนดเวลาที่ต้องทำ (เช่น 13:00-15:00)
+Location-Based - ต้องไปยังจุดจริงในค่าย
+Team Coordination - ต้องใช้ 2+ คนทำพร้อมกัน
+
+สรุป: AI automation solve ได้ดีในส่วน pure crypto แต่ติดปัญหาใน physical/human verification และ multi-stage challenges ที่ต้องใช้ context awareness สูง
+
+
+# 🔓 Anti-Trap System - AI Counter-Measures for CTF Automation
+
+## 🎯 Philosophy: "Assume Everything is a Trap"
+
+```python
+# Core principle: NEVER trust first-seen values
+# Always verify, cross-reference, and validate
+```
+
+---
+
+## 🛡️ Counter-Measure Matrix
+
+### **1. Context Confusion Defense**
+
+#### **File: `helpers/context_analyzer.py`**
+
+```python
+#!/usr/bin/env python3
+"""
+Context Analyzer - Detect and extract REAL parameters from obfuscated code
+"""
+import re
+import ast
+from typing import Dict, List, Any
+
+class ContextAnalyzer:
+    def __init__(self, source_code: str):
+        self.source = source_code
+        self.candidates = {
+            'n': [],
+            'e': [],
+            'c': [],
+            'p': [],
+            'q': [],
+            'd': []
+        }
+    
+    def extract_all_assignments(self):
+        """Extract ALL variable assignments, not just first occurrence"""
+        
+        # Method 1: Regex extraction
+        for var in ['n', 'e', 'c', 'p', 'q', 'd']:
+            # Match: var = <value>
+            pattern = rf'{var}\s*=\s*([0-9a-fxA-FX]+)'
+            matches = re.findall(pattern, self.source)
+            self.candidates[var].extend(matches)
+            
+            # Match: var = int("...", base)
+            pattern = rf'{var}\s*=\s*int\(["\']([^"\']+)["\']\s*,?\s*(\d+)?\)'
+            matches = re.findall(pattern, self.source)
+            for value, base in matches:
+                base = int(base) if base else 10
+                self.candidates[var].append(str(int(value, base)))
+        
+        # Method 2: AST parsing (more reliable)
+        try:
+            tree = ast.parse(self.source)
+            for node in ast.walk(tree):
+                if isinstance(node, ast.Assign):
+                    for target in node.targets:
+                        if isinstance(target, ast.Name):
+                            var_name = target.id
+                            if var_name in self.candidates:
+                                # Extract value
+                                value = self._extract_value(node.value)
+                                if value:
+                                    self.candidates[var_name].append(value)
+        except:
+            pass
+        
+        return self.candidates
+    
+    def _extract_value(self, node):
+        """Extract value from AST node"""
+        if isinstance(node, ast.Constant):
+            return str(node.value)
+        elif isinstance(node, ast.Num):
+            return str(node.n)
+        elif isinstance(node, ast.Call):
+            # Handle int("0x...", 16)
+            if isinstance(node.func, ast.Name) and node.func.id == 'int':
+                if node.args:
+                    arg = node.args[0]
+                    if isinstance(arg, ast.Constant):
+                        base = 10
+                        if len(node.args) > 1:
+                            base = node.args[1].value
+                        return str(int(arg.value, base))
+        return None
+    
+    def rank_candidates(self, var: str) -> List[str]:
+        """
+        Rank candidates by likelihood of being real value
+        Heuristics:
+        1. Larger values more likely for n, c
+        2. Common values (65537) likely for e
+        3. Values in comments less likely to be decoys
+        4. Last assignment usually real (overwrite pattern)
+        """
+        candidates = self.candidates.get(var, [])
+        if not candidates:
+            return []
+        
+        # Convert to integers
+        int_candidates = []
+        for c in candidates:
+            try:
+                int_candidates.append(int(c, 0))
+            except:
+                pass
+        
+        if not int_candidates:
+            return []
+        
+        # Ranking rules
+        if var == 'n':
+            # Larger N more likely (RSA modulus should be big)
+            int_candidates.sort(reverse=True)
+        elif var == 'e':
+            # Common exponents first (65537, 3, 17)
+            common_e = [65537, 3, 17, 5, 257]
+            int_candidates.sort(key=lambda x: (x not in common_e, x))
+        elif var == 'c':
+            # Larger ciphertext more likely
+            int_candidates.sort(reverse=True)
+        
+        return [str(c) for c in int_candidates]
+    
+    def get_best_params(self) -> Dict[str, Any]:
+        """Get most likely real parameters"""
+        self.extract_all_assignments()
+        
+        result = {}
+        for var in ['n', 'e', 'c', 'p', 'q', 'd']:
+            ranked = self.rank_candidates(var)
+            if ranked:
+                result[var] = ranked[0]  # Best candidate
+                result[f'{var}_all'] = ranked  # All candidates
+        
+        return result
+
+def analyze_challenge_file(filepath: str) -> Dict[str, Any]:
+    """Analyze challenge file and extract real parameters"""
+    with open(filepath, 'r') as f:
+        source = f.read()
+    
+    analyzer = ContextAnalyzer(source)
+    params = analyzer.get_best_params()
+    
+    # Additional checks
+    if 'n' in params and 'e' in params:
+        n = int(params['n'], 0)
+        e = int(params['e'], 0)
+        
+        # Sanity checks
+        if n.bit_length() < 512:
+            print(f"[!] WARNING: N is suspiciously small ({n.bit_length()} bits)")
+            print(f"[!] Trying next candidate...")
+            if 'n_all' in params and len(params['n_all']) > 1:
+                params['n'] = params['n_all'][1]
+    
+    return params
+
+# Example usage
+if __name__ == '__main__':
+    import sys
+    result = analyze_challenge_file(sys.argv[1])
+    print("Extracted parameters:")
+    for k, v in result.items():
+        if not k.endswith('_all'):
+            print(f"{k} = {v}")
+```
+
+---
+
+### **2. Multi-Stage Challenge Bypass**
+
+#### **File: `helpers/stage_detector.py`**
+
+```python
+#!/usr/bin/env python3
+"""
+Multi-Stage Challenge Detector and Orchestrator
+Automatically detects stages and coordinates execution
+"""
+import re
+import json
+from typing import List, Dict, Any
+from pathlib import Path
+
+class StageDetector:
+    def __init__(self, challenge_dir: Path):
+        self.challenge_dir = Path(challenge_dir)
+        self.stages = []
+    
+    def detect_stages(self) -> List[Dict[str, Any]]:
+        """
+        Detect challenge stages from:
+        1. File naming (stage1.py, stage2.py)
+        2. Comments in code (# Stage 1:, # Stage 2:)
+        3. Network endpoints (/stage/1, /stage/2)
+        4. README instructions
+        """
+        
+        # Method 1: File-based stages
+        stage_files = sorted(self.challenge_dir.glob('stage*.py'))
+        stage_files.extend(sorted(self.challenge_dir.glob('step*.py')))
+        
+        for f in stage_files:
+            stage_num = int(re.search(r'(\d+)', f.stem).group(1))
+            self.stages.append({
+                'number': stage_num,
+                'type': 'file',
+                'path': f,
+                'requires_human': self._check_human_required(f)
+            })
+        
+        # Method 2: Code comment stages
+        for py_file in self.challenge_dir.glob('*.py'):
+            with open(py_file) as f:
+                content = f.read()
+                stage_comments = re.findall(r'#\s*Stage\s*(\d+):\s*(.+)', content, re.IGNORECASE)
+                for stage_num, description in stage_comments:
+                    self.stages.append({
+                        'number': int(stage_num),
+                        'type': 'comment',
+                        'description': description.strip(),
+                        'file': py_file,
+                        'requires_human': 'physical' in description.lower() or 'location' in description.lower()
+                    })
+        
+        # Method 3: Network-based stages
+        if (self.challenge_dir / 'server.py').exists():
+            with open(self.challenge_dir / 'server.py') as f:
+                content = f.read()
+                endpoints = re.findall(r'@app\.route\(["\']([^"\']+)["\']\)', content)
+                for endpoint in endpoints:
+                    if match := re.search(r'stage[/_]?(\d+)', endpoint):
+                        self.stages.append({
+                            'number': int(match.group(1)),
+                            'type': 'network',
+                            'endpoint': endpoint
+                        })
+        
+        # Sort by stage number
+        self.stages.sort(key=lambda x: x['number'])
+        return self.stages
+    
+    def _check_human_required(self, filepath: Path) -> bool:
+        """Check if stage requires human interaction"""
+        with open(filepath) as f:
+            content = f.read().lower()
+        
+        human_keywords = [
+            'captcha', 'physical', 'location', 'gps', 'coordinates',
+            'qr code', 'scan', 'photo', 'image', 'upload',
+            'timestamp', 'real-time', 'in-person'
+        ]
+        
+        return any(keyword in content for keyword in human_keywords)
+    
+    def create_bypass_plan(self) -> Dict[str, Any]:
+        """Create execution plan with bypass strategies"""
+        plan = {
+            'total_stages': len(self.stages),
+            'automated_stages': [],
+            'human_required_stages': [],
+            'bypass_strategies': {}
+        }
+        
+        for stage in self.stages:
+            if stage.get('requires_human'):
+                plan['human_required_stages'].append(stage['number'])
+                plan['bypass_strategies'][stage['number']] = self._suggest_bypass(stage)
+            else:
+                plan['automated_stages'].append(stage['number'])
+        
+        return plan
+    
+    def _suggest_bypass(self, stage: Dict[str, Any]) -> List[str]:
+        """Suggest bypass strategies for human-required stages"""
+        strategies = []
+        
+        description = stage.get('description', '').lower()
+        
+        if 'captcha' in description:
+            strategies.append("Use 2captcha API or manual solver service")
+            strategies.append("Check if CAPTCHA has audio alternative (easier to automate)")
+        
+        if 'physical' in description or 'location' in description:
+            strategies.append("Check if GPS can be spoofed via API parameters")
+            strategies.append("Look for test/debug endpoints that skip verification")
+            strategies.append("Coordinate with team member at location")
+        
+        if 'qr' in description:
+            strategies.append("Generate QR code programmatically")
+            strategies.append("Use qrcode library to create valid QR")
+        
+        if 'photo' in description or 'image' in description:
+            strategies.append("Generate synthetic image with required elements")
+            strategies.append("Use image manipulation to add required markers")
+        
+        if 'timestamp' in description:
+            strategies.append("Sync system time with server")
+            strategies.append("Check if timestamp validation is strict")
+        
+        return strategies
+
+# Example usage
+if __name__ == '__main__':
+    import sys
+    detector = StageDetector(sys.argv[1])
+    stages = detector.detect_stages()
+    plan = detector.create_bypass_plan()
+    
+    print(json.dumps(plan, indent=2))
+```
+
+---
+
+### **3. Red Herring Detector**
+
+#### **File: `helpers/red_herring_detector.py`**
+
+```python
+#!/usr/bin/env python3
+"""
+Red Herring Detector - Identify fake/misleading parameters
+"""
+import gmpy2
+from typing import Dict, List, Tuple
+
+class RedHerringDetector:
+    def __init__(self, params: Dict[str, int]):
+        self.params = params
+        self.warnings = []
+    
+    def validate_rsa_params(self) -> bool:
+        """Validate RSA parameters for common traps"""
+        n = self.params.get('n')
+        e = self.params.get('e')
+        c = self.params.get('c')
+        
+        if not all([n, e, c]):
+            return False
+        
+        # Check 1: e=3 but message is padded (small-e won't work)
+        if e == 3:
+            # Try small-e attack
+            m, exact = gmpy2.iroot(c, e)
+            if exact:
+                # Check if result looks like valid plaintext
+                try:
+                    plaintext = int(m).to_bytes((m.bit_length() + 7) // 8, 'big')
+                    if b'coc2026{' in plaintext or b'flag{' in plaintext:
+                        return True  # Real small-e vulnerability
+                except:
+                    pass
+            
+            self.warnings.append("e=3 but small-e attack failed - likely padded message (RED HERRING)")
+        
+        # Check 2: N too small (likely fake)
+        if n.bit_length() < 512:
+            self.warnings.append(f"N is only {n.bit_length()} bits - suspiciously small (RED HERRING?)")
+        
+        # Check 3: C > N (invalid ciphertext)
+        if c >= n:
+            self.warnings.append("C >= N - invalid ciphertext (RED HERRING)")
+            return False
+        
+        # Check 4: gcd(e, n) != 1 (invalid RSA)
+        if gmpy2.gcd(e, n) != 1:
+            self.warnings.append("gcd(e, n) != 1 - invalid RSA parameters (RED HERRING)")
+            return False
+        
+        # Check 5: e >= n (invalid)
+        if e >= n:
+            self.warnings.append("e >= n - invalid exponent (RED HERRING)")
+            return False
+        
+        return True
+    
+    def detect_padding_scheme(self, c: int, n: int, e: int) -> str:
+        """Detect if message is padded (affects attack strategy)"""
+        
+        # Try small-e attack
+        if e <= 100:
+            m, exact = gmpy2.iroot(c, e)
+            if exact:
+                try:
+                    plaintext = int(m).to_bytes((m.bit_length() + 7) // 8, 'big')
+                    # Check for PKCS#1 v1.5 padding
+                    if plaintext[:2] == b'\x00\x02':
+                        return "PKCS1_v1.5"
+                    # Check for OAEP padding
+                    if plaintext[:1] == b'\x00':
+                        return "OAEP"
+                    # No padding detected
+                    return "NONE"
+                except:
+                    pass
+        
+        return "UNKNOWN"
+    
+    def suggest_real_attack(self) -> List[str]:
+        """Suggest real attack based on validation"""
+        suggestions = []
+        
+        n = self.params.get('n')
+        e = self.params.get('e')
+        c = self.params.get('c')
+        
+        if not self.validate_rsa_params():
+            suggestions.append("Parameters failed validation - look for alternative parameter sources")
+            return suggestions
+        
+        # Suggest attacks based on parameters
+        if e == 3:
+            padding = self.detect_padding_scheme(c, n, e)
+            if padding == "NONE":
+                suggestions.append("Small-e attack (e=3, no padding)")
+            else:
+                suggestions.append(f"e=3 but {padding} padding detected - try factoring N instead")
+        
+        if e == 65537:
+            # Check for close primes
+            sqrt_n = gmpy2.isqrt(n)
+            if (sqrt_n + 1) ** 2 - n < n // 1000:
+                suggestions.append("Fermat factorization (primes likely close)")
+        
+        # Check for small d (Wiener's attack)
+        if e > n ** 0.5:
+            suggestions.append("Wiener's attack (e is large, d might be small)")
+        
+        return suggestions
+
+# Example usage
+if __name__ == '__main__':
+    params = {
+        'n': 0x9b7e1c3d5a2f8e4b6c9a1d3e5f7b8c2a4e6f8a1c3d5e7f9b1c3d5e7f9b1c3d5e,
+        'e': 3,
+        'c': 0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+    }
+    
+    detector = RedHerringDetector(params)
+    if detector.validate_rsa_params():
+        print("✓ Parameters valid")
+        print("Suggested attacks:")
+        for suggestion in detector.suggest_real_attack():
+            print(f"  - {suggestion}")
+    else:
+        print("✗ Parameters invalid")
+        for warning in detector.warnings:
+            print(f"  ! {warning}")
+```
+
+---
+
+### **4. Encoding Hell Solver**
+
+#### **File: `helpers/encoding_chain_breaker.py`**
+
+` ` `python
+#!/usr/bin/env python3
+"""
+Encoding Chain Breaker - Automatically detect and decode multi-layer encoding
+"""
+import base64
+import binascii
+import re
+from typing import List, Tuple, Optional
+
+class EncodingChainBreaker:
+    def __init__(self, data: bytes):
+        self.original_data = data
+        self.decode_chain = []
+    
+    def detect_encoding(self, data: bytes) -> List[str]:
+        """Detect possible encodings for given data"""
+        possible = []
+        
+        # Base64 detection
+        try:
+            if re.match(rb'^[A-Za-z0-9+/=]+$', data):
+                decoded = base64.b64decode(data)
+                if decoded != data:  # Successfully decoded to something different
+                    possible.append('base64')
+        except:
+            pass
+        
+        # Hex detection
+        try:
+            if re.match(rb'^[0-9a-fA-F]+$', data) and len(data) % 2 == 0:
+                decoded = binascii.unhexlify(data)
+                if decoded != data:
+                    possible.append('hex')
+        except:
+            pass
+        
+        # ROT13 detection (for ASCII text)
+        try:
+            text = data.decode('ascii')
+            if text.isalpha():
+                possible.append('rot13')
+        except:
+            pass
+        
+        # URL encoding detection
+        if b'%' in data:
+            try:
+                from urllib.parse import unquote
+                decoded = unquote(data.decode())
+                if decoded != data.decode():
+                    possible.append('url')
+            except:
+                pass
+        
+        # XOR detection (single-byte key)
+        if self._detect_xor(data):
+            possible.append('xor_single')
+        
+        # Zlib compression
+        try:
+            import zlib
+            decompressed = zlib.decompress(data)
+            if decompressed != data:
+                possible.append('zlib')
+        except:
+            pass
+        
+        return possible
+    
+    def _detect_xor(self, data: bytes) -> bool:
+        """Detect if data is XOR-encoded"""
+        # Check for repeating patterns
+        if len(data) < 20:
+            return False
+        
+        # Try common XOR keys
+        for key in range(1, 256):
+            decoded = bytes([b ^ key for b in data])
+            # Check if result looks like text
+            try:
+                text = decoded.decode('ascii')
+                if text.isprintable() and ' ' in text:
+                    return True
+            except:
+                pass
+        
+        return False
+    
+    def decode_layer(self, data: bytes, encoding: str) -> Optional[bytes]:
+        """Decode one layer"""
+        try:
+            if encoding == 'base64':
+                return base64.b64decode(data)
+            elif encoding == 'hex':
+                return binascii.unhexlify(data)
+            elif encoding == 'rot13':
+                import codecs
+                return codecs.decode(data.decode(), 'rot13').encode()
+            elif encoding == 'url':
+                from urllib.parse import unquote
+                return unquote(data.decode()).encode()
+            elif encoding == 'xor_single':
+                return self._break_xor_single(data)
+            elif encoding == 'zlib':
+                import zlib
+                return zlib.decompress(data)
+        except:
+            return None
+    
+    def _break_xor_single(self, data: bytes) -> bytes:
+        """Break single-byte XOR"""
+        best_score = 0
+        best_key = 0
+        
+        for key in range(256):
+            decoded = bytes([b ^ key for b in data])
+            score = self._score_plaintext(decoded)
+            if score > best_score:
+                best_score = score
+                best_key = key
+        
+        return bytes([b ^ best_key for b in data])
+    
+    def _score_plaintext(self, data: bytes) -> float:
+        """Score how likely data is English plaintext"""
+        try:
+            text = data.decode('ascii')
+            # English letter frequency
+            freq = {
+                'e': 12.70, 't': 9.06, 'a': 8.17, 'o': 7.51, 'i': 6.97,
+                'n': 6.75, 's': 6.33, 'h': 6.09, 'r': 5.99
+            }
+            score = sum(freq.get(c.lower(), 0) for c in text)
+            # Bonus for spaces
+            score += text.count(' ') * 5
+            return score
+        except:
+            return 0
+    
+    def auto_decode(self, max_depth: int = 10) -> Tuple[bytes, List[str]]:
+        """Automatically decode all layers"""
+        current_data = self.original_data
+        chain = []
+        
+        for depth in range(max_depth):
+            encodings = self.detect_encoding(current_data)
+            
+            if not encodings:
+                break  # No more encodings detected
+            
+            # Try each encoding
+            decoded = None
+            used_encoding = None
+            
+            for encoding in encodings:
+                decoded = self.decode_layer(current_data, encoding)
+                if decoded and decoded != current_data:
+                    used_encoding = encoding
+                    break
+            
+            if not decoded or decoded == current_data:
+                break  # Can't decode further
+            
+            chain.append(used_encoding)
+            current_data = decoded
+            
+            # Check if we found a flag
+            if b'coc2026{' in current_data or b'flag{' in current_data:
+                break
+        
+        return current_data, chain
+
+# Example usage
+if __name__ == '__main__':
+    import sys
+    
+    with open(sys.argv[1], 'rb') as f:
+        data = f.read()
+    
+    breaker = Encod

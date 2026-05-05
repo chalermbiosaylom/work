@@ -1,0 +1,87 @@
+[
+  {
+    "name": "rsa_small_e",
+    "evidence": ["e=3", "single ciphertext"],
+    "expected_attack": "small-e",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "rsa_wiener",
+    "evidence": ["very large e", "small d suspicion"],
+    "expected_attack": "wiener",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "rsa_close_primes",
+    "evidence": ["p and q close", "fermat hint"],
+    "expected_attack": "fermat",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "ecc_anomalous",
+    "evidence": ["ECC", "anomalous curve"],
+    "expected_attack": "smart",
+    "expected_tool": "sage",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "lwe_cvp",
+    "evidence": ["A,b,q", "lattice/cvp"],
+    "expected_attack": "lwe-cvp",
+    "expected_tool": "sage",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "cbc_padding_oracle",
+    "evidence": ["CBC", "padding error oracle"],
+    "expected_attack": "padding-oracle",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "mt19937_outputs",
+    "evidence": ["random outputs", "predict next"],
+    "expected_attack": "mt-state-recovery",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "unknown_multilayer",
+    "evidence": ["hex/base64 fragments", "no direct hint"],
+    "expected_attack": "decode-chain",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "rsa_common_modulus",
+    "evidence": ["same n", "common modulus", "two ciphertexts"],
+    "expected_attack": "common-modulus",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "rsa_partial_prime",
+    "evidence": ["partial prime", "known high bits", "small roots"],
+    "expected_attack": "coppersmith",
+    "expected_tool": "sage",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "explicit_attack_override",
+    "attack": "smart",
+    "notes": ["order equals p"],
+    "expected_attack": "smart",
+    "expected_tool": "sage",
+    "expected_solver_type": "program"
+  },
+  {
+    "name": "no_hint_defaults_decode_chain",
+    "evidence": ["random bytes", "opaque blob"],
+    "expected_attack": "decode-chain",
+    "expected_tool": "python",
+    "expected_solver_type": "program"
+  }
+]

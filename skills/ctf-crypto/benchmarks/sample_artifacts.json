@@ -1,0 +1,33 @@
+[
+  {
+    "name": "rsa_small_e_basic",
+    "attack": "small-e",
+    "n": "0x0ca1",
+    "e": 3,
+    "c": 125,
+    "description": "baseline small-e smoke case"
+  },
+  {
+    "name": "decode_chain_base64_flag",
+    "attack": "decode-chain",
+    "payload": "Y29jMjAyNntzYW1wbGVfZmxhZ30=",
+    "description": "base64 encoded wrapper flag"
+  },
+  {
+    "name": "preflight_decoy_enrichment",
+    "attack": "small-e",
+    "source": "n = 123456 # decoy\n# real\nn = 0xCA1\ne = 3\nc = 0x7d",
+    "description": "stage 1 captcha then fake flag trap",
+    "notes": "missing direct n/e/c fields on purpose; should enrich from source"
+  },
+  {
+    "name": "common_modulus_basic",
+    "attack": "common-modulus",
+    "n": 3233,
+    "e1": 17,
+    "c1": 855,
+    "e2": 13,
+    "c2": 2021,
+    "description": "same modulus two exponents"
+  }
+]

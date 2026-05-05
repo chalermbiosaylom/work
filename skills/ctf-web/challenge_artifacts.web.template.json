@@ -1,0 +1,47 @@
+[
+  {
+    "name": "jwt_admin_bypass_case",
+    "target": "http://TARGET_HOST",
+    "evidence": [
+      "jwt token in cookie",
+      "alg none accepted",
+      "role claim controls access"
+    ]
+  },
+  {
+    "name": "upload_rce_case",
+    "target": "http://TARGET_HOST/upload",
+    "evidence": [
+      "multipart form upload",
+      "extension filter in place",
+      "content-type validation weak"
+    ]
+  },
+  {
+    "name": "ssti_probe_case",
+    "target": "http://TARGET_HOST/render",
+    "evidence": [
+      "user input rendered in template",
+      "{{7*7}} reflected",
+      "jinja-like syntax"
+    ]
+  },
+  {
+    "name": "lfi_case",
+    "target": "http://TARGET_HOST/download",
+    "evidence": [
+      "file parameter present",
+      "../ traversal behavior",
+      "/etc/passwd leakage clue"
+    ]
+  },
+  {
+    "name": "ssrf_case",
+    "target": "http://TARGET_HOST/fetch",
+    "evidence": [
+      "url fetch endpoint",
+      "internal host reachable",
+      "169.254.169.254 mentioned"
+    ]
+  }
+]

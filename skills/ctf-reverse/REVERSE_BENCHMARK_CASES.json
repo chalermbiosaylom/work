@@ -1,0 +1,82 @@
+[
+  {
+    "name": "stripped_elf_static",
+    "evidence": ["stripped", "elf", "ghidra", "static analysis"],
+    "expected_track": "binary-static",
+    "expected_primary_mcp": "ghidramcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "load-in-ghidra-and-analyze"
+  },
+  {
+    "name": "gdb_dynamic_trace",
+    "evidence": ["gdb", "breakpoint", "ltrace", "dynamic"],
+    "expected_track": "binary-dynamic",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ghidramcp",
+    "expected_first_action": "run-with-ltrace-strace"
+  },
+  {
+    "name": "custom_vm_bytecode",
+    "evidence": ["custom vm", "bytecode", "opcode", "interpreter"],
+    "expected_track": "vm-custom",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "reverse-opcode-table"
+  },
+  {
+    "name": "upx_packed_binary",
+    "evidence": ["packed", "upx", "obfuscated"],
+    "expected_track": "obfuscation",
+    "expected_primary_mcp": "ghidramcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "detect-packer-and-unpack"
+  },
+  {
+    "name": "python_pyc_decompile",
+    "evidence": [".pyc", "python bytecode", "marshal"],
+    "expected_track": "pyc-bytecode",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "decompile-with-uncompyle6"
+  },
+  {
+    "name": "wasm_game_patch",
+    "evidence": ["wasm", "webassembly", "wat"],
+    "expected_track": "wasm",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "convert-wasm-to-wat"
+  },
+  {
+    "name": "android_apk_jadx",
+    "evidence": ["apk", "android", "jadx"],
+    "expected_track": "apk-mobile",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "decompile-with-jadx"
+  },
+  {
+    "name": "dotnet_dnspy",
+    "evidence": [".net", "dnspy", "c#"],
+    "expected_track": "dotnet",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "load-in-dnspy"
+  },
+  {
+    "name": "reverse_pwn_suid_binary",
+    "evidence": ["suid", "setuid", "privilege", "binary"],
+    "expected_track": "binary-dynamic",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-pwn",
+    "expected_first_action": "handoff-reverse-pwn-exploit-chain"
+  },
+  {
+    "name": "reverse_crypto_xor_cipher",
+    "evidence": ["xor key", "cipher", "encryption", "binary"],
+    "expected_track": "binary-static",
+    "expected_primary_mcp": "ghidramcp",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_first_action": "handoff-reverse-crypto-algorithm-extract"
+  }
+]

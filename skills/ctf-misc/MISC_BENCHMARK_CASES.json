@@ -1,0 +1,82 @@
+[
+  {
+    "name": "interactive_judge_dp",
+    "evidence": ["interactive prompt", "query answer", "dp", "constraints 2e5"],
+    "expected_track": "programming-algorithmic",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "create-persistent-session-and-fast-io-template"
+  },
+  {
+    "name": "offline_graph_shortest_path",
+    "evidence": ["n m edges", "shortest path", "dijkstra", "stdin"],
+    "expected_track": "programming-algorithmic",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "classify-complexity-and-select-template"
+  },
+  {
+    "name": "python_jail_no_import",
+    "evidence": ["python jail", "no import", "blacklist", "eval"],
+    "expected_track": "pyjail",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "stabilize-interactive-jail-loop"
+  },
+  {
+    "name": "bash_restricted_shell",
+    "evidence": ["rbash", "restricted shell", "no slash", "history"],
+    "expected_track": "bashjail",
+    "expected_primary_mcp": "pentest-mcp",
+    "expected_supplemental_mcp": "ctf-solve",
+    "expected_first_action": "stabilize-interactive-jail-loop"
+  },
+  {
+    "name": "multi_layer_encoding",
+    "evidence": ["base64", "hex", "rot13", "weird charset"],
+    "expected_track": "encodings",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "build-deterministic-decode-pipeline"
+  },
+  {
+    "name": "brainfuck_source",
+    "evidence": ["brainfuck", "esolang", ">+<[]"],
+    "expected_track": "esolang",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "run-esolang-interpreter-and-extract-output"
+  },
+  {
+    "name": "qr_chunks_ordering",
+    "evidence": ["qr", "chunks", "indexed directory", "reassembly"],
+    "expected_track": "qr-barcode",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_first_action": "batch-decode-and-order-fragments"
+  },
+  {
+    "name": "audio_spectrogram_signal",
+    "evidence": ["wav", "spectrogram", "dtmf", "sstv"],
+    "expected_track": "audio-video-signal",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_first_action": "generate-spectrogram-and-extract-symbols"
+  },
+  {
+    "name": "rf_iq_demod",
+    "evidence": ["iq", "qam", "carrier recovery", "complex64"],
+    "expected_track": "rf-sdr",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_first_action": "detect-iq-format-and-run-demod-pipeline"
+  },
+  {
+    "name": "dns_nsec_ecs",
+    "evidence": ["dns", "nsec", "ecs", "ixfr"],
+    "expected_track": "dns-exploitation",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "pentest-mcp",
+    "expected_first_action": "run-deterministic-dns-enumeration"
+  }
+]

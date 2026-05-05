@@ -1,0 +1,19 @@
+{
+  "challenge_name": "pwn-sample",
+  "target": "nc host port or local binary",
+  "evidence": [
+    "gets",
+    "no pie",
+    "no canary",
+    "win()"
+  ],
+  "notes": [
+    "replace with real evidence from checksec/strings/gdb",
+    "for batch routing, provide array of artifact objects"
+  ],
+  "expected_usage": {
+    "single": "python3 solve_pwn.py --input-json challenge_artifacts.pwn.template.json --json",
+    "benchmark": "python3 solve_pwn.py --benchmark-mode --json",
+    "strict_benchmark": "python3 solve_pwn.py --benchmark-mode --strict-benchmark --pass-threshold 0.95 --json"
+  }
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "name": "jwt_rsa_signature_forge",
+    "evidence": ["jwt", "rsa token", "signature", "alg RS256"],
+    "expected_track": "jwt-auth",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_first_action": "handoff-web-crypto-token-analysis"
+  },
+  {
+    "name": "jwt_hmac_key_confusion",
+    "evidence": ["jwt", "hmac", "alg HS256", "key confusion"],
+    "expected_track": "jwt-auth",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_first_action": "handoff-web-crypto-token-analysis"
+  },
+  {
+    "name": "upload_rce_webshell",
+    "evidence": ["upload", "webshell", "rce", "reverse shell"],
+    "expected_track": "upload-rce",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-os-exploit",
+    "expected_first_action": "handoff-web-os-shell-stabilization"
+  },
+  {
+    "name": "ssti_rce_privesc",
+    "evidence": ["ssti", "jinja", "rce", "sudo -l", "privesc"],
+    "expected_track": "ssti",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-os-exploit",
+    "expected_first_action": "handoff-web-os-shell-stabilization"
+  },
+  {
+    "name": "aes_encrypted_cookie",
+    "evidence": ["cookie", "aes", "cipher", "decrypt"],
+    "expected_track": "jwt-auth",
+    "expected_primary_mcp": "ctf-solve",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_first_action": "handoff-web-crypto-token-analysis"
+  }
+]

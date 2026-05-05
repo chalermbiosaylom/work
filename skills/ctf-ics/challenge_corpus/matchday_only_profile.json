@@ -1,0 +1,195 @@
+{
+  "description": "Match-day only profile with strict validated-now tier and service-up candidate tier",
+  "generated_at_utc": "2026-04-08T01:47:08.055934+00:00",
+  "selection_criteria": {
+    "protocols": [
+      "modbus",
+      "enip"
+    ],
+    "prefer_success": true,
+    "prefer_ttr_sec_lte": 2.0,
+    "strict_semantic_filters": [
+      "failed to open a connection",
+      "connection refused",
+      "unable to read identity",
+      "injection_failed",
+      "\"status\": \"error\"",
+      "\"status\": \"timeout\""
+    ],
+    "ranking_weights": {
+      "success": 60.0,
+      "ttr": 25.0,
+      "semantic_clean": 15.0
+    },
+    "min_score": 5.0,
+    "protocol_balanced_order": true,
+    "protocol_balance_mode": "strict"
+  },
+  "profile_tiers": {
+    "strict_validated_now": {
+      "source_run": "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_enip_real_run_postfix.json",
+      "stable_case_ids": [
+        "modbus_illuminated_pcap",
+        "enip_pcap_flag_forensics_pattern"
+      ],
+      "ranked": [
+        {
+          "id": "modbus_illuminated_pcap",
+          "score": 91.662,
+          "protocol": "modbus",
+          "rc": 0,
+          "success": true,
+          "ttr_sec": 0.667,
+          "semantic_clean": true,
+          "connection_fail": false
+        },
+        {
+          "id": "enip_pcap_flag_forensics_pattern",
+          "score": 90.025,
+          "protocol": "enip",
+          "rc": 0,
+          "success": true,
+          "ttr_sec": 0.798,
+          "semantic_clean": true,
+          "connection_fail": false
+        }
+      ]
+    },
+    "service_up_candidates": {
+      "source_runs": [
+        "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_matchday_tierA_real_run.json",
+        "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_enip_real_run_postfix.json",
+        "/home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_matchday_real_run.json"
+      ],
+      "candidate_case_ids": [
+        "modbus_illuminated_pcap",
+        "enip_pcap_flag_forensics_pattern",
+        "modbus_connect_fullscan_triage",
+        "modbus_chemtech_flag3_rgb_formula",
+        "modbus_unit_map_ranking_state_pivot",
+        "modbus_chemtech_flag1_register_dump",
+        "modbus_state_gated_recovery_pattern",
+        "enip_cpppo_auto_sweep_class8",
+        "modbus_chemtech_flag2_maintenance_override",
+        "enip_ics_toolkit_read_sweep",
+        "toolkit_enip_tag_sweep_pattern"
+      ],
+      "ranked": [
+        {
+          "id": "modbus_illuminated_pcap",
+          "score": 91.662,
+          "protocol": "modbus",
+          "rc": 0,
+          "success": true,
+          "ttr_sec": 0.667,
+          "semantic_clean": true,
+          "connection_fail": false
+        },
+        {
+          "id": "enip_pcap_flag_forensics_pattern",
+          "score": 90.025,
+          "protocol": "enip",
+          "rc": 0,
+          "success": true,
+          "ttr_sec": 0.798,
+          "semantic_clean": true,
+          "connection_fail": false
+        },
+        {
+          "id": "modbus_connect_fullscan_triage",
+          "score": 60.1,
+          "protocol": "modbus",
+          "rc": 0,
+          "success": true,
+          "ttr_sec": 1.992,
+          "semantic_clean": false,
+          "connection_fail": true
+        },
+        {
+          "id": "modbus_chemtech_flag3_rgb_formula",
+          "score": 21.638,
+          "protocol": "modbus",
+          "rc": 1,
+          "success": false,
+          "ttr_sec": 1.069,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "modbus_unit_map_ranking_state_pivot",
+          "score": 21.413,
+          "protocol": "modbus",
+          "rc": 1,
+          "success": false,
+          "ttr_sec": 1.087,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "modbus_chemtech_flag1_register_dump",
+          "score": 21.4,
+          "protocol": "modbus",
+          "rc": 1,
+          "success": false,
+          "ttr_sec": 1.088,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "modbus_state_gated_recovery_pattern",
+          "score": 16.462,
+          "protocol": "modbus",
+          "rc": 1,
+          "success": false,
+          "ttr_sec": 1.483,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "enip_cpppo_auto_sweep_class8",
+          "score": 10.0,
+          "protocol": "enip",
+          "rc": 124,
+          "success": false,
+          "ttr_sec": 20.0,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "modbus_chemtech_flag2_maintenance_override",
+          "score": 10.0,
+          "protocol": "modbus",
+          "rc": 1,
+          "success": false,
+          "ttr_sec": 4.072,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "enip_ics_toolkit_read_sweep",
+          "score": 10.0,
+          "protocol": "enip",
+          "rc": 124,
+          "success": false,
+          "ttr_sec": 20.0,
+          "semantic_clean": true,
+          "connection_fail": true
+        },
+        {
+          "id": "toolkit_enip_tag_sweep_pattern",
+          "score": 10.0,
+          "protocol": "enip",
+          "rc": 124,
+          "success": false,
+          "ttr_sec": 20.0,
+          "semantic_clean": true,
+          "connection_fail": true
+        }
+      ]
+    }
+  },
+  "usage": {
+    "replay_strict_now": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_harness.py --protocols modbus,enip --include-ids modbus_illuminated_pcap,enip_pcap_flag_forensics_pattern --timeout 20 --json",
+    "replay_service_up": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_harness.py --protocols modbus,enip --include-ids modbus_illuminated_pcap,enip_pcap_flag_forensics_pattern,modbus_connect_fullscan_triage,modbus_chemtech_flag3_rgb_formula,modbus_unit_map_ranking_state_pivot,modbus_chemtech_flag1_register_dump,modbus_state_gated_recovery_pattern,enip_cpppo_auto_sweep_class8,modbus_chemtech_flag2_maintenance_override,enip_ics_toolkit_read_sweep,toolkit_enip_tag_sweep_pattern --timeout 20 --json"
+  }
+}

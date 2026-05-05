@@ -1,0 +1,50 @@
+[
+  {
+    "name": "pcap_http_credentials",
+    "evidence": ["traffic.pcapng", "http basic auth", "dns queries"],
+    "expected_track": "pcap-network",
+    "expected_first_tool": "tshark"
+  },
+  {
+    "name": "memory_windows_malfind",
+    "evidence": ["memory.dmp", "windows process injection", "malfind"],
+    "expected_track": "memory",
+    "expected_first_tool": "volatility3"
+  },
+  {
+    "name": "disk_deleted_files",
+    "evidence": ["disk.dd", "deleted file", "partition"],
+    "expected_track": "disk-image",
+    "expected_first_tool": "sleuthkit"
+  },
+  {
+    "name": "image_steg_lsb",
+    "evidence": ["suspicious.png", "lsb", "steganography"],
+    "expected_track": "steganography",
+    "expected_first_tool": "zsteg"
+  },
+  {
+    "name": "jpeg_passphrase_steg",
+    "evidence": ["photo.jpg", "hidden payload", "steghide"],
+    "expected_track": "steganography",
+    "expected_first_tool": "steghide"
+  },
+  {
+    "name": "windows_event_logs",
+    "evidence": ["Security.evtx", "event id 4624", "rdp login"],
+    "expected_track": "windows-evtx",
+    "expected_first_tool": "evtx_dump"
+  },
+  {
+    "name": "pdf_hidden_metadata",
+    "evidence": ["document.pdf", "metadata", "embedded objects"],
+    "expected_track": "document-pdf",
+    "expected_first_tool": "pdf_triage"
+  },
+  {
+    "name": "archive_nested_zip",
+    "evidence": ["archive.zip", "nested files", "extract recursively"],
+    "expected_track": "archive",
+    "expected_first_tool": "archive_listing"
+  }
+]

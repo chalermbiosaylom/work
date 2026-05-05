@@ -1,0 +1,660 @@
+# 🛡️ CTF Anti-Trap Command Reference (Complete Edition)
+
+## 📋 Table of Contents
+1. `[Process Management & Timeouts](#1-process-management--timeouts)`
+2. `[Resource Exhaustion Defense](#2-resource-exhaustion-defense)`
+3. `[Rabbit Hole Evasion](#3-rabbit-hole-evasion)`
+4. `[Crypto Trap Detection](#4-crypto-trap-detection)`
+5. `[Decoy Flag Validation](#5-decoy-flag-validation)`
+6. `[Steganography Trap Detection](#6-steganography-trap-detection)`
+7. `[Logic Bomb Countermeasures](#7-logic-bomb-countermeasures)`
+8. `[Supply Chain Defense](#8-supply-chain-defense)`
+9. `[Adaptive Network Timeouts](#9-adaptive-network-timeouts)`
+10. `[Emergency Bailout Protocols](#10-emergency-bailout-protocols)`
+
+---
+
+## 1. Process Management & Timeouts
+
+### ✅ Safe Timeout Wrappers
+
+```bash
+# Basic timeout (preferred method)
+timeout 60s <command>
+
+# Timeout with fallback kill
+timeout --kill-after=5s 60s <command>
+
+# Background process with safe cleanup
+run_with_timeout() {
+    local timeout=$1
+    shift
+    "$@" & 
+    local pid=$!
+    ( sleep $timeout; kill -0 $pid 2>/dev/null && kill -9 $pid ) &
+    local killer=$!
+    wait $pid 2>/dev/null
+    local status=$?
+    kill -9 $killer 2>/dev/null
+    return $status
+}
+
+# Usage
+run_with_timeout 60 nmap -p- target.com
+```
+
+### ❌ Avoid These Patterns
+
+```bash
+# WRONG: Race condition
+<command> & PID=$!; sleep 60; kill -9 $PID 2>/dev/null
+
+# WRONG: Orphaned processes
+<command> & sleep 60; killall <command>
+```
+
+---
+
+## 2. Resource Exhaustion Defense
+
+### Archive Analysis (Pre-Extraction)
+
+```bash
+# Zip files - inspect before extraction
+unzip -l suspicious.zip | head -20
+unzip -l suspicious.zip | wc -l  # Count files
+
+# If >100 files or nested archives, investigate manually
+if [ $(unzip -l file.zip | wc -l) -gt 100 ]; then
+    echo "🚨 Potential zip bomb detected"
+    exit 1
+fi
+
+# 7z archives
+7z l suspicious.7z | grep -E "Size|Packed"
+
+# Tar archives
+tar -tzf suspicious.tar.gz | head -20
+tar -tzf suspicious.tar.gz | wc -l
+```
+
+### Binwalk Safe Usage
+
+```bash
+# STEP 1: Inspect signatures ONLY (no extraction)
+timeout 30s binwalk suspicious.bin > binwalk_output.txt
+
+# STEP 2: Analyze output
+signature_count=$(grep -c "0x" binwalk_output.txt)
+nested_compression=$(grep -cE "Zlib|LZMA|gzip" binwalk_output.txt)
+
+if [ $signature_count -gt 50 ] || [ $nested_compression -gt 10 ]; then
+    echo "🚨 Signature bomb detected - $signature_count signatures, $nested_compression compressed layers"
+    exit 1
+fi
+
+# STEP 3: Extract only if safe
+binwalk -e suspicious.bin --max-size=100M
+```
+
+### Network Request Timeouts
+
+```bash
+# cURL with adaptive timeout
+curl --max-time 15 --connect-timeout 5 http://target.com/api
+
+# wget with retry limits
+wget --timeout=15 --tries=2 http://target.com/file
+
+# Python requests
+import requests
+try:
+    r = requests.get('http://target.com', timeout=(5, 15))  # (connect, read)
+except requests.Timeout:
+    print("🚨 Timeout trap detected")
+```
+
+### Web Fuzzing (Anti-Spider Trap)
+
+```bash
+# ffuf with depth limit and timeout
+ffuf -w wordlist.txt \
+     -u http://target.com/FUZZ \
+     -recursion \
+     -recursion-depth 2 \
+     -timeout 10 \
+     -t 20
+
+# gobuster with rate limiting
+gobuster dir -u http://target.com \
+             -w wordlist.txt \
+             -t 10 \
+             -timeout 10s \
+             --no-error
+
+# Detect infinite redirect loops
+curl -L --max-redirs 5 http://target.com/endpoint
+```
+
+### Memory-Safe File Reading
+
+```bash
+# Read file in chunks (prevent OOM)
+read_chunked() {
+    local file=$1
+    local chunk_size=1048576  # 1MB chunks
+    local chunk_count=0
+    
+    while IFS= read -r -n $chunk_size chunk; do
+        echo "$chunk" | grep -q "flag\|coc2026" && echo "Found in chunk $chunk_count"
+        chunk_count=$((chunk_count + 1))
+        
+        # Abort if 3 consecutive identical chunks
+        if [ $chunk_count -gt 3 ]; then
+            if [ "$chunk" == "$prev_chunk" ] && [ "$prev_chunk" == "$prev_prev_chunk" ]; then
+                echo "🚨 Infinite data trap detected"
+                break
+            fi
+        fi
+        
+        prev_prev_chunk=$prev_chunk
+        prev_chunk=$chunk
+    done < "$file"
+}
+```
+
+---
+
+## 3. Rabbit Hole Evasion
+
+### Reverse Engineering Shortcuts
+
+```bash
+# Find meaningful strings with context
+strings -n 8 binary | grep -iE "flag|password|key|correct|wrong|admin"
+
+# Extract only printable ASCII (ignore garbage)
+strings -e s binary > ascii_strings.txt
+strings -e l binary > unicode_strings.txt
+
+# Ghidra headless analysis (auto-find main logic)
+analyzeHeadless /tmp/project ProjectName \
+    -import binary \
+    -postScript FindMainLogic.py \
+    -scriptPath /path/to/scripts
+```
+
+### Anti-Debugging Bypass
+
+```bash
+# Method 1: Patch ptrace check
+# In Ghidra: Find ptrace call → Right-click → Patch Instruction → NOP (0x90)
+
+# Method 2: LD_PRELOAD hook
+cat > fake_ptrace.c << 'EOF'
+#include <sys/types.h>
+long ptrace(int request, pid_t pid, void *addr, void *data) {
+    return 0;  // Always succeed
+}
+EOF
+gcc -shared -fPIC fake_ptrace.c -o fake_ptrace.so
+LD_PRELOAD=./fake_ptrace.so gdb ./binary
+
+# Method 3: Frida trace
+frida-trace -i 'ptrace' ./binary
+
+# Method 4: Patch in-memory
+gdb ./binary
+(gdb) catch syscall ptrace
+(gdb) commands
+> set $rax = 0
+> continue
+> end
+(gdb) run
+```
+
+### GDB Anti-Loop Protection
+
+```bash
+# Set instruction count limit
+gdb ./binary
+(gdb) set $count = 0
+(gdb) define step_safe
+> stepi
+> set $count = $count + 1
+> if $count > 1000
+>   echo 🚨 Loop detected, breaking\n
+>   set $count = 0
+>   return
+> end
+> end
+
+# Auto-break on suspicious patterns
+(gdb) catch syscall nanosleep
+(gdb) catch syscall clock_gettime
+```
+
+### Obfuscation Detection
+
+```bash
+# Detect VM-based packers (Themida, VMProtect)
+strings binary | grep -iE "themida|vmprotect|enigma|upx"
+
+# Entropy analysis (high entropy = packed/encrypted)
+python3 << 'EOF'
+import math
+from collections import Counter
+
+def entropy(data):
+    if not data:
+        return 0
+    counter = Counter(data)
+    length = len(data)
+    return -sum((count/length) * math.log2(count/length) for count in counter.values())
+
+with open('binary', 'rb') as f:
+    data = f.read()
+    ent = entropy(data)
+    print(f"Entropy: {ent:.2f}")
+    if ent > 7.5:
+        print("🚨 High entropy - likely packed/encrypted")
+EOF
+
+# Auto-unpack with upx
+upx -d binary -o binary_unpacked 2>/dev/null || echo "Not UPX packed"
+```
+
+---
+
+## 4. Crypto Trap Detection
+
+### Feasibility Check
+
+```bash
+# RSA factorization time estimate
+python3 << 'EOF'
+from Crypto.PublicKey import RSA
+import math
+
+key = RSA.import_key(open('pubkey.pem').read())
+n = key.n
+bits = n.bit_length()
+
+# Rough estimate: 2^(bits/3) operations for GNFS
+time_estimate = 2 ** (bits / 3) / 1e9  # Assuming 1 GHz CPU
+
+print(f"Modulus size: {bits} bits")
+print(f"Estimated factorization time: {time_estimate:.2e} seconds")
+
+if time_estimate > 300:  # 5 minutes
+    print("🚨 Brute-force trap - look for weaknesses")
+else:
+    print("✅ Feasible to factor")
+EOF
+```
+
+### Common Crypto Weaknesses
+
+```bash
+# Small exponent attack (e=3)
+python3 << 'EOF'
+from Crypto.PublicKey import RSA
+from gmpy2 import iroot
+
+key = RSA.import_key(open('pubkey.pem').read())
+c = int(open('ciphertext.txt').read())
+
+if key.e == 3:
+    m, exact = iroot(c, 3)
+    if exact:
+        print(f"✅ Small exponent attack successful: {bytes.fromhex(hex(m)[2:])}")
+EOF
+
+# Wiener's attack (small d)
+git clone https://github.com/pablocelayes/rsa-wiener-attack
+python3 RSAwienerHacker.py -n <modulus> -e <exponent>
+
+# Common modulus attack detector
+python3 << 'EOF'
+import sys
+from Crypto.PublicKey import RSA
+
+keys = [RSA.import_key(open(f'key{i}.pem').read()) for i in range(1, 3)]
+if keys[0].n == keys[1].n:
+    print("🚨 Common modulus detected - use CRT attack")
+EOF
+```
+
+---
+
+## 5. Decoy Flag Validation
+
+### Smart Flag Filtering
+
+```bash
+# Extract potential flags
+grep -oE 'coc2026\{[^}]+\}' output.txt > candidates.txt
+
+# Filter decoys
+python3 << 'EOF'
+import re
+from collections import Counter
+
+decoy_keywords = ['fake', 'test', 'try', 'harder', 'noob', 'wrong', 'decoy', 'haha', 'nice_try', 'lol', 'troll']
+
+with open('candidates.txt') as f:
+    flags = f.read().splitlines()
+
+def score_flag(flag):
+    inner = flag[8:-1]  # Remove coc2026{...}
+    score = 0
+    
+    # Penalize decoy keywords
+    for keyword in decoy_keywords:
+        if keyword in inner.lower():
+            score -= 10
+    
+    # Reward entropy
+    if len(set(inner)) > len(inner) * 0.5:
+        score += 5
+    
+    # Reward mixed character classes
+    if re.search(r'[a-z]', inner) and re.search(r'[A-Z]', inner):
+        score += 3
+    if re.search(r'\d', inner):
+        score += 2
+    if re.search(r'[^a-zA-Z0-9]', inner):
+        score += 2
+    
+    # Reward length (real flags usually >10 chars)
+    if len(inner) > 10:
+        score += 3
+    
+    return score
+
+ranked = sorted([(score_flag(f), f) for f in flags], reverse=True)
+for score, flag in ranked:
+    print(f"[{score:+3d}] {flag}")
+EOF
+```
+
+### Submission Rate Limiting
+
+```bash
+# Test submission with rate limit handling
+submit_flag() {
+    local flag=$1
+    local response=$(curl -s -X POST \
+        -H "Content-Type: application/json" \
+        -d "{\"flag\":\"$flag\"}" \
+        http://ctf.server/submit)
+    
+    if echo "$response" | grep -q "rate limit"; then
+        echo "⏳ Rate limited - waiting 60s"
+        sleep 60
+        submit_flag "$flag"
+    elif echo "$response" | grep -q "correct"; then
+        echo "✅ FLAG ACCEPTED: $flag"
+        return 0
+    else
+        echo "❌ Wrong flag: $flag"
+        return 1
+    fi
+}
+```
+
+---
+
+## 6. Steganography Trap Detection
+
+### LSB Entropy Check
+
+```bash
+# Sample-based LSB analysis
+python3 << 'EOF'
+from PIL import Image
+import numpy as np
+
+img = Image.open('suspicious.png')
+pixels = np.array(img)
+
+# Sample 100 random pixels
+sample = pixels.flatten()[:100]
+lsb = sample & 1
+
+# Check entropy
+unique_ratio = len(set(lsb)) / len(lsb)
+print(f"LSB unique ratio: {unique_ratio:.2f}")
+
+if unique_ratio < 0.1:
+    print("🚨 LSB trap detected - 99% noise")
+else:
+    print("✅ Potential hidden data")
+    # Proceed with full extraction
+EOF
+
+# Quick stegsolve check (first 1000 pixels only)
+timeout 10s stegsolve suspicious.png
+```
+
+---
+
+## 7. Logic Bomb Countermeasures
+
+### Time-Based Check Bypass
+
+```bash
+# Method 1: faketime
+faketime '2026-01-01 00:00:00' ./binary
+
+# Method 2: LD_PRELOAD time hook
+cat > fake_time.c << 'EOF'
+#include <time.h>
+time_t time(time_t *t) {
+    time_t fake = 1735689600;  // 2025-01-01
+    if (t) *t = fake;
+    return fake;
+}
+EOF
+gcc -shared -fPIC fake_time.c -o fake_time.so
+LD_PRELOAD=./fake_time.so ./binary
+
+# Method 3: Patch time syscall in GDB
+gdb ./binary
+(gdb) catch syscall time
+(gdb) commands
+> set $rax = 1735689600
+> continue
+> end
+```
+
+### Environment Check Bypass
+
+```bash
+# Detect environment checks
+ltrace ./binary 2>&1 | grep -E "getenv|access|stat"
+
+# Spoof environment
+export EXPECTED_VAR="expected_value"
+export HOME="/root"
+export USER="admin"
+
+# Patch file existence checks
+cat > fake_access.c << 'EOF'
+#include <unistd.h>
+int access(const char *pathname, int mode) {
+    return 0;  // Always exists
+}
+EOF
+gcc -shared -fPIC fake_access.c -o fake_access.so
+LD_PRELOAD=./fake_access.so ./binary
+```
+
+---
+
+## 8. Supply Chain Defense
+
+### Sandbox Provided Files
+
+```bash
+# Docker isolation
+docker run --rm -it \
+    --network none \
+    --read-only \
+    --tmpfs /tmp \
+    -v $(pwd):/work:ro \
+    ubuntu:22.04 bash
+
+# Firejail sandbox
+firejail --net=none --private --read-only=/work ./binary
+
+# Check Python dependencies for malware
+pip install safety
+safety check -r requirements.txt
+
+# Audit Docker images
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+    aquasec/trivy image provided_image:latest
+```
+
+### Script Analysis
+
+```bash
+# Detect suspicious patterns in provided scripts
+grep -rE "eval|exec|__import__|compile|os\.system|subprocess\.call" .
+
+# Static analysis
+bandit -r . -f json -o bandit_report.json
+
+# Check for obfuscated code
+python3 << 'EOF'
+import ast
+import sys
+
+with open('provided_script.py') as f:
+    code = f.read()
+
+try:
+    tree = ast.parse(code)
+    # Count suspicious nodes
+    suspicious = sum(1 for node in ast.walk(tree) 
+                    if isinstance(node, (ast.Exec, ast.Eval, ast.Import)))
+    if suspicious > 5:
+        print(f"🚨 {suspicious} suspicious AST nodes detected")
+except SyntaxError:
+    print("🚨 Obfuscated code - cannot parse AST")
+EOF
+```
+
+---
+
+## 9. Adaptive Network Timeouts
+
+### Dynamic Timeout Calculation
+
+```bash
+# Measure RTT and set adaptive timeout
+calculate_timeout() {
+    local target=$1
+    
+    # Ping 5 times and get average RTT
+    local rtt=$(ping -c 5 -W 2 $target 2>/dev/null | \
+                grep "rtt" | \
+                awk -F'/' '{print $5}')
+    
+    if [ -z "$rtt" ]; then
+        echo "15"  # Default fallback
+        return
+    fi
+    
+    # Timeout = max(10s, 3 * RTT)
+    local timeout=$(echo "$rtt * 3 / 1000" | bc)
+    if (( $(echo "$timeout < 10" | bc -l) )); then
+        echo "10"
+    else
+        echo "$timeout"
+    fi
+}
+
+# Usage
+TIMEOUT=$(calculate_timeout target.com)
+curl --max-time $TIMEOUT http://target.com/api
+```
+
+### Python Adaptive Requests
+
+```python
+import subprocess
+import requests
+import statistics
+
+def measure_latency(host, samples=5):
+    """Measure network latency to target"""
+    try:
+        result = subprocess.run(
+            ['ping', '-c', str(samples), '-W', '2', host],
+            capture_output=True, text=True, timeout=15
+        )
+        
+        # Parse RTT values
+        rtts = []
+        for line in result.stdout.split('\n'):
+            if 'time=' in line:
+                rtt = float(line.split('time=')[1].split()[0])
+                rtts.append(rtt)
+        
+        if rtts:
+            return statistics.mean(rtts) / 1000  # Convert to seconds
+    except:
+        pass
+    
+    return 0.5  # Default 500ms
+
+def adaptive_request(url, method='GET', **kwargs):
+    """Make HTTP request with adaptive timeout"""
+    host = url.split('/')[2]
+    latency = measure_latency(host)
+    
+    # Timeout = max(10s, 3 * latency + 5s buffer)
+    timeout = max(10, latency * 3 + 5)
+    
+    print(f"📊 Measured latency: {latency*1000:.0f}ms → Using timeout: {timeout:.1f}s")
+    
+    try:
+        return requests.request(method, url, timeout=(5, timeout), **kwargs)
+    except requests.Timeout:
+        print(f"🚨 Timeout after {timeout}s - possible tarpit")
+        return None
+
+# Usage
+response = adaptive_request('http://target.com/api/endpoint')
+```
+
+---
+
+## 10. Emergency Bailout Protocols
+
+### Auto-Abort Triggers
+
+` ` `bash
+# Comprehensive trap detection wrapper
+ctf_safe_run() {
+    local category=$1
+    local command=$2
+    local max_time=${3:-60}
+    
+    echo "🔍 Running: $command (max ${max_time}s)"
+    
+    # Start command in background
+    timeout --kill-after=5s ${max_time}s bash -c "$command" &
+    local pid=$!
+    
+    # Monitor resource usage
+    while kill -0 $pid 2>/dev/null; do
+        # Check CPU usage
+        local cpu=$(ps -p $pid -o %cpu= 2>/dev/null | awk '{print int($1)}')
+        
+        # Check memory usage (in MB)
+        local mem=$(ps -p $pid -o rss= 2>/dev/null | awk '{print int($1/1024)}')
+        
+        if [ "$cpu" == "100" ] && [ "$mem" -gt

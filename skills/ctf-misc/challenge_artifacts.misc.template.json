@@ -1,0 +1,20 @@
+{
+  "challenge_name": "misc-programming-sample",
+  "category_hint": "misc",
+  "target": "local file or nc host:port",
+  "evidence": [
+    "interactive prompt",
+    "constraints up to 2e5",
+    "need fast io",
+    "python preferred"
+  ],
+  "notes": [
+    "replace evidence with real findings",
+    "for batch routing, provide a JSON array of artifact objects"
+  ],
+  "expected_usage": {
+    "single": "python3 solve_misc.py --input-json challenge_artifacts.misc.template.json --json",
+    "benchmark": "python3 solve_misc.py --benchmark-mode --json",
+    "strict_benchmark": "python3 solve_misc.py --benchmark-mode --strict-benchmark --pass-threshold 0.95 --json"
+  }
+}

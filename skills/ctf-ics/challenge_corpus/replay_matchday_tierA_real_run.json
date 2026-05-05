@@ -1,0 +1,52 @@
+{
+  "summary": {
+    "run_at_utc": "2026-04-08T01:29:57.818058+00:00",
+    "protocols": [
+      "enip",
+      "modbus"
+    ],
+    "selected_cases": 2,
+    "skipped_cases": [],
+    "executed_cases": 2,
+    "success_count": 2,
+    "avg_ttr_min": 0.012,
+    "total_improve_min_vs_prev": 0.007,
+    "comparable_cases": 2
+  },
+  "results": [
+    {
+      "id": "modbus_illuminated_pcap",
+      "protocol": "modbus",
+      "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/tools/pcap/modbus_flag_extract_pcap.py /home/kali/Desktop/RTAF-CTF-2026/OT-Security-Lab/01_ICS_SCADA_Modbus/Illuminated/capture.pcap --json",
+      "return_code": 0,
+      "success": true,
+      "failure_reason": "",
+      "import_error_detected": false,
+      "ttr_sec": 0.667,
+      "ttr_min": 0.011,
+      "prev_ttr_sec": 1.0357570359999926,
+      "improve_sec_vs_prev": 0.3683310809999938,
+      "improve_min_vs_prev": 0.006,
+      "stdout_tail": "{\n  \"pcap_file\": \"/home/kali/Desktop/RTAF-CTF-2026/OT-Security-Lab/01_ICS_SCADA_Modbus/Illuminated/capture.pcap\",\n  \"status\": \"success\",\n  \"error_msg\": \"\",\n  \"total_packets_scanned\": 1414,\n  \"flags_found\": []\n}",
+      "stderr_tail": "",
+      "notes_path": "/home/kali/Desktop/RTAF-CTF-2026/OT-Security-Lab/01_ICS_SCADA_Modbus/Illuminated/solve.md"
+    },
+    {
+      "id": "enip_pcap_flag_forensics_pattern",
+      "protocol": "enip",
+      "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/tools/pcap/enip_flag_extract_pcap.py /home/kali/Desktop/RTAF-CTF-2026/OT-Security-Lab/01_ICS_SCADA_Modbus/Illuminated/capture.pcap --all-ports --json",
+      "return_code": 0,
+      "success": true,
+      "failure_reason": "",
+      "import_error_detected": false,
+      "ttr_sec": 0.798,
+      "ttr_min": 0.013,
+      "prev_ttr_sec": 0.8336686220000047,
+      "improve_sec_vs_prev": 0.03519340500002954,
+      "improve_min_vs_prev": 0.001,
+      "stdout_tail": "{\n  \"pcap_file\": \"/home/kali/Desktop/RTAF-CTF-2026/OT-Security-Lab/01_ICS_SCADA_Modbus/Illuminated/capture.pcap\",\n  \"status\": \"success\",\n  \"error_msg\": \"\",\n  \"total_packets_scanned\": 1414,\n  \"flags_found\": []\n}",
+      "stderr_tail": "",
+      "notes_path": "/home/kali/Desktop/.windsurf/skills/ctf-ics/tools/pcap/enip_flag_extract_pcap.py"
+    }
+  ]
+}

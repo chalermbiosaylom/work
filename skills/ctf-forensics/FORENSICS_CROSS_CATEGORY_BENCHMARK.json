@@ -1,0 +1,42 @@
+[
+  {
+    "name": "pcap_modbus_traffic",
+    "evidence": ["pcap", "modbus", "tcp port 502", "ics"],
+    "expected_track": "pcap-network",
+    "expected_first_tool": "tshark",
+    "expected_supplemental_mcp": "ctf-ics",
+    "expected_handoff_action": "handoff-forensics-ics-protocol-analysis"
+  },
+  {
+    "name": "pcap_s7comm_plc",
+    "evidence": ["pcapng", "s7", "plc", "ot traffic"],
+    "expected_track": "pcap-network",
+    "expected_first_tool": "tshark",
+    "expected_supplemental_mcp": "ctf-ics",
+    "expected_handoff_action": "handoff-forensics-ics-protocol-analysis"
+  },
+  {
+    "name": "pcap_enip_ethernet_ip",
+    "evidence": ["pcap", "enip", "ethernet/ip", "port 44818"],
+    "expected_track": "pcap-network",
+    "expected_first_tool": "tshark",
+    "expected_supplemental_mcp": "ctf-ics",
+    "expected_handoff_action": "handoff-forensics-ics-protocol-analysis"
+  },
+  {
+    "name": "memory_aes_encrypted_data",
+    "evidence": ["memory.dmp", "aes", "encrypted", "key derivation"],
+    "expected_track": "memory",
+    "expected_first_tool": "volatility3",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_handoff_action": "handoff-forensics-crypto-key-recovery"
+  },
+  {
+    "name": "disk_rsa_private_key",
+    "evidence": ["disk.dd", "rsa", "private key", "cipher"],
+    "expected_track": "disk-image",
+    "expected_first_tool": "sleuthkit",
+    "expected_supplemental_mcp": "ctf-crypto",
+    "expected_handoff_action": "handoff-forensics-crypto-key-recovery"
+  }
+]

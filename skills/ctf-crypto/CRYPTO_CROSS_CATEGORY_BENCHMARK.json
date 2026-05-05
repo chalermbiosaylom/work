@@ -1,0 +1,38 @@
+[
+  {
+    "name": "jwt_rsa_weak_key",
+    "evidence": ["jwt", "rsa", "web token", "authorization"],
+    "expected_attack": "small-e",
+    "expected_tool": "python",
+    "expected_solver_type": "program",
+    "expected_supplemental_mcp": "ctf-web",
+    "expected_handoff_action": "handoff-crypto-web-token-validation"
+  },
+  {
+    "name": "pcap_tls_weak_rsa",
+    "evidence": ["pcap", "tls", "rsa certificate", "weak key"],
+    "expected_attack": "fermat",
+    "expected_tool": "python",
+    "expected_solver_type": "program",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_handoff_action": "handoff-crypto-forensics-artifact-decrypt"
+  },
+  {
+    "name": "memory_dump_aes_key",
+    "evidence": ["memory dump", "aes key", "forensics artifact"],
+    "expected_attack": "decode-chain",
+    "expected_tool": "python",
+    "expected_solver_type": "program",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_handoff_action": "handoff-crypto-forensics-artifact-decrypt"
+  },
+  {
+    "name": "disk_image_encrypted_zip",
+    "evidence": ["disk image", "encrypted", "zip password"],
+    "expected_attack": "padding-oracle",
+    "expected_tool": "python",
+    "expected_solver_type": "program",
+    "expected_supplemental_mcp": "ctf-forensics",
+    "expected_handoff_action": "handoff-crypto-forensics-artifact-decrypt"
+  }
+]

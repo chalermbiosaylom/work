@@ -1,0 +1,214 @@
+{
+  "last_ttr_sec": {
+    "modbus_chemtech_flag1_register_dump": 1.0881077290000007,
+    "modbus_chemtech_flag2_maintenance_override": 4.071937852000005,
+    "modbus_chemtech_flag3_rgb_formula": 1.0686810369999904,
+    "modbus_color_plant_1of2": 0.03497311899991473,
+    "modbus_color_plant_2of2": 0.03129210499901092,
+    "modbus_evil_plant": 0.0019091530011792202,
+    "modbus_illuminated_pcap": 0.6674259549999988,
+    "enip_cip_core_meltdown": 6.189900263000027,
+    "simulator_modbus_client_test": 20.0,
+    "simulator_modbus_server_test": 20.0,
+    "enip_list_identity_banner_hunt": 3.0281846560000076,
+    "enip_cpppo_auto_sweep_class8": 20.0,
+    "enip_cpppo_state_trigger_restore": 4.6339036809999925,
+    "enip_pcap_flag_forensics_pattern": 0.7984752169999751,
+    "enip_tiger_identity_probe": 2.235634141999981,
+    "enip_tiger_discover_scan": 4.054244559999972,
+    "enip_tiger_hunt_decode_chain": 6.184578810000005,
+    "enip_ics_toolkit_list_identity": 3.028443030999995,
+    "enip_ics_toolkit_read_sweep": 20.0,
+    "enip_ics_toolkit_write_restore_gate": 4.649630847999958,
+    "ciptool_cli_discovery_workflow": 4.068313574000001,
+    "ciptool_tiger_identity_menu_flow": 3.127331082000012,
+    "ciptool_tiger_tag_hunt_flow": 3.143808648000004,
+    "ciptool_tiger_custom_packet_flow": 3.1303252169999496,
+    "ciptool_fuzz_class_inventory": 3.1368712180000102,
+    "ciptool_fuzz_identity_object_info": 3.1357345460000374,
+    "toolkit_enip_tag_sweep_pattern": 20.0,
+    "modbus_unit_map_ranking_state_pivot": 1.0874085439999988,
+    "modbus_connect_fullscan_triage": 1.9918371550000131,
+    "modbus_holding_inspector_chunked": 3.070756382999974,
+    "modbus_state_gated_recovery_pattern": 1.4832903740000063
+  },
+  "best_ttr_sec": {
+    "modbus_chemtech_flag1_register_dump": 0.30446482000115793,
+    "modbus_chemtech_flag2_maintenance_override": 0.0641081289977592,
+    "modbus_chemtech_flag3_rgb_formula": 0.08034953300011693,
+    "modbus_color_plant_1of2": 0.021358432997658383,
+    "modbus_color_plant_2of2": 0.021443206002004445,
+    "modbus_evil_plant": 0.0019091530011792202,
+    "modbus_illuminated_pcap": 0.6574348169997393,
+    "enip_cip_core_meltdown": 0.030790921999141574,
+    "simulator_modbus_client_test": 0.01628845300001558,
+    "simulator_modbus_server_test": 0.016365240000595804,
+    "enip_list_identity_banner_hunt": 0.042807162997632986,
+    "enip_cpppo_auto_sweep_class8": 0.3462779000001319,
+    "enip_cpppo_state_trigger_restore": 0.06495043099857867,
+    "enip_pcap_flag_forensics_pattern": 0.7984752169999751,
+    "enip_tiger_identity_probe": 0.04459640200002468,
+    "enip_tiger_discover_scan": 4.054244559999972,
+    "enip_tiger_hunt_decode_chain": 0.04339190999962739,
+    "enip_ics_toolkit_list_identity": 0.03118089299823623,
+    "enip_ics_toolkit_read_sweep": 0.18489414600117016,
+    "enip_ics_toolkit_write_restore_gate": 0.062345741000171984,
+    "ciptool_cli_discovery_workflow": 4.068313574000001,
+    "ciptool_tiger_identity_menu_flow": 0.06392911199873197,
+    "ciptool_tiger_tag_hunt_flow": 0.07007028600128251,
+    "ciptool_tiger_custom_packet_flow": 0.06495923100010259,
+    "ciptool_fuzz_class_inventory": 0.07852409800034366,
+    "ciptool_fuzz_identity_object_info": 0.07364025700007915,
+    "toolkit_enip_tag_sweep_pattern": 0.35765715800152975,
+    "modbus_unit_map_ranking_state_pivot": 1.0874085439999988,
+    "modbus_connect_fullscan_triage": 1.9918371550000131,
+    "modbus_holding_inspector_chunked": 3.070756382999974,
+    "modbus_state_gated_recovery_pattern": 1.4832903740000063
+  },
+  "runs": [
+    {
+      "run_at_utc": "2026-04-07T07:15:31.571119+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-07T07:15:31.571119+00:00",
+        "protocols": [
+          "enip",
+          "modbus"
+        ],
+        "selected_cases": 10,
+        "skipped_cases": [
+          {
+            "id": "toolkit_enip_tag_sweep_pattern",
+            "reason": "unresolved_placeholder"
+          },
+          {
+            "id": "modbus_state_gated_recovery_pattern",
+            "reason": "unresolved_placeholder"
+          }
+        ],
+        "executed_cases": 10,
+        "success_count": 6,
+        "avg_ttr_min": 0.003,
+        "total_improve_min_vs_prev": null,
+        "comparable_cases": 0
+      }
+    },
+    {
+      "run_at_utc": "2026-04-07T07:15:46.169513+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-07T07:15:46.169513+00:00",
+        "protocols": [
+          "enip",
+          "modbus"
+        ],
+        "selected_cases": 10,
+        "skipped_cases": [
+          {
+            "id": "toolkit_enip_tag_sweep_pattern",
+            "reason": "unresolved_placeholder"
+          },
+          {
+            "id": "modbus_state_gated_recovery_pattern",
+            "reason": "unresolved_placeholder"
+          }
+        ],
+        "executed_cases": 10,
+        "success_count": 6,
+        "avg_ttr_min": 0.002,
+        "total_improve_min_vs_prev": 0.01,
+        "comparable_cases": 10
+      }
+    },
+    {
+      "run_at_utc": "2026-04-07T07:18:26.509829+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-07T07:18:26.509829+00:00",
+        "protocols": [
+          "enip",
+          "modbus"
+        ],
+        "selected_cases": 10,
+        "skipped_cases": [
+          {
+            "id": "toolkit_enip_tag_sweep_pattern",
+            "reason": "unresolved_placeholder"
+          },
+          {
+            "id": "modbus_state_gated_recovery_pattern",
+            "reason": "unresolved_placeholder"
+          }
+        ],
+        "executed_cases": 10,
+        "success_count": 5,
+        "avg_ttr_min": 0.069,
+        "total_improve_min_vs_prev": -0.666,
+        "comparable_cases": 10
+      }
+    },
+    {
+      "run_at_utc": "2026-04-07T07:34:02.856248+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-07T07:34:02.856248+00:00",
+        "protocols": [
+          "enip"
+        ],
+        "selected_cases": 18,
+        "skipped_cases": [],
+        "executed_cases": 18,
+        "success_count": 7,
+        "avg_ttr_min": 0.01,
+        "total_improve_min_vs_prev": 0.0,
+        "comparable_cases": 1
+      }
+    },
+    {
+      "run_at_utc": "2026-04-08T01:24:07.148662+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-08T01:24:07.148662+00:00",
+        "protocols": [
+          "enip",
+          "modbus"
+        ],
+        "selected_cases": 13,
+        "skipped_cases": [],
+        "executed_cases": 13,
+        "success_count": 4,
+        "avg_ttr_min": 0.1,
+        "total_improve_min_vs_prev": -1.123,
+        "comparable_cases": 9
+      }
+    },
+    {
+      "run_at_utc": "2026-04-08T01:26:41.902246+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-08T01:26:41.902246+00:00",
+        "protocols": [
+          "enip"
+        ],
+        "selected_cases": 18,
+        "skipped_cases": [],
+        "executed_cases": 18,
+        "success_count": 7,
+        "avg_ttr_min": 0.106,
+        "total_improve_min_vs_prev": -0.713,
+        "comparable_cases": 18
+      }
+    },
+    {
+      "run_at_utc": "2026-04-08T01:29:57.818058+00:00",
+      "summary": {
+        "run_at_utc": "2026-04-08T01:29:57.818058+00:00",
+        "protocols": [
+          "enip",
+          "modbus"
+        ],
+        "selected_cases": 2,
+        "skipped_cases": [],
+        "executed_cases": 2,
+        "success_count": 2,
+        "avg_ttr_min": 0.012,
+        "total_improve_min_vs_prev": 0.007,
+        "comparable_cases": 2
+      }
+    }
+  ]
+}

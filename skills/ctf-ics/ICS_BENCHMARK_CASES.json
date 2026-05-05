@@ -1,0 +1,49 @@
+[
+  {
+    "name": "solver_help",
+    "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/ics-ctf-trap-playbook/solve_all.py --help",
+    "must_contain": [
+      "ICS CTF Universal Solver",
+      "--recon-only"
+    ],
+    "expected_exit_code": 0
+  },
+  {
+    "name": "trap_detector_help",
+    "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/ics-ctf-trap-playbook/trap_detector.py --help",
+    "must_contain": [
+      "Trap Detector",
+      "--full-scan"
+    ],
+    "expected_exit_code": 0
+  },
+  {
+    "name": "universal_bypass_help",
+    "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/ics-ctf-trap-playbook/universal_bypass.py --help",
+    "must_contain": [
+      "Universal Trap Bypass",
+      "--auto",
+      "--json"
+    ],
+    "expected_exit_code": 0
+  },
+  {
+    "name": "modbus_connect_help",
+    "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/tools/modbus/modbus_connect_test.py --help",
+    "must_contain": [
+      "Modbus Triage",
+      "--full-scan",
+      "--json"
+    ],
+    "expected_exit_code": 0
+  },
+  {
+    "name": "replay_harness_dry_run",
+    "command": "python3 /home/kali/Desktop/.windsurf/skills/ctf-ics/challenge_corpus/replay_harness.py --protocols modbus,enip --max-cases 3 --dry-run --json",
+    "must_contain": [
+      "\"executed_cases\"",
+      "\"success_count\""
+    ],
+    "expected_exit_code": 0
+  }
+]

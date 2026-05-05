@@ -1,0 +1,6 @@
+gmpy2
+owiener
+pycryptodome
+sympy
+z3-solver
+requests
