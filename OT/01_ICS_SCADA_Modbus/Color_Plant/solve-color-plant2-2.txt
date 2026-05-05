@@ -1,0 +1,31 @@
+color Plant 2/2
+misc industrial protocol FCSC 2022
+
+ 
+
+
+Description
+In this second part of the Color Plant challenge, your objective will be to handle the plant in production in order to fill a tank with the color RGB(32, 126, 42) within 90 seconds. To do that, you need to open and close valves at the right time, adjust flow rates by manipulating the various registers of the PLC via the Modbus protocol.
+
+The PLC service is exposed on TCP port 4502.
+Solution
+Same method as before, we go back to the documentation and try to interact with the system to fully understand:
+
+a valve is opened/closed by (0 or 1).write_single_coil()
+Its flow rate is regulated via a register: . A few tests show an important point: you can't exceed a flow rate of 5 units per second.write_single_register()
+The quantities present in the tanks can be recovered with .read_input_registers()
+The objective is to make a mix of 32, 126 and 42, i.e. a sum of 200, and obviously, the mixing tank is not enough. Fortunately, we realize that in two passes of 16, 64 and 21, we are all good.
+
+It should also be noted that our work is facilitated by automatic systems. For example, when the mixing tank is full (which will be the case during our two passes), it will empty automatically without any action on our part.
+
+Finally, there are several possible designs, for example opening the valves at a certain flow rate and delaying until you get the right amount (or the one you think). I chose instead to base myself on the real values returned by the sensors, which seems to me to be more in line with what is done in the industry.
+
+All in all, my solution (code below) has possible improvements, especially in terms of speeds, or by delaying the loops for reading the values. But it works well, within the time limits allotted.
+
+For some reason I don't understand, it's extremely satisfying to watch.
+
+
+
+And the result displayed is as follows;
+
+flag2

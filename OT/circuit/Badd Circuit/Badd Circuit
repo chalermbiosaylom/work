@@ -1,0 +1,71 @@
+Circuit analysis
+Logical symbols used
+Tables of truth
+Circuit diagram
+Identified entries
+Exit from the circuit
+Conclusion
+Circuit analysis
+baddcircuit
+
+The diagram represents a 4-bit binary adder using only basic logic gates :
+
+XOR: to calculate the sum without carrying.
+AND: to generate the carry .
+OR: to propagate the retention.
+This type of setup is called a ripple carry adder : each block adds two bits and a carry, and propagates the carry to the next bit.
+
+Logical symbols used
+Door	Symbol	Function
+XOR	⊕	Binary sum without restraint
+AND	⋅	Logical product
+GOLD	+	Logical addition
+Tables of truth
+XOR
+
+HAS	B	A ⊕ B
+0	0	0
+0	1	1
+1	0	1
+1	1	0
+AND
+
+HAS	B	A ⋅ B
+0	0	0
+0	1	0
+1	0	0
+1	1	1
+GOLD
+
+HAS	B	A + B
+0	0	0
+0	1	1
+1	0	1
+1	1	1
+Circuit diagram
+The following image is the complete annotated circuit :
+
+The inputs are visible at the bottom: two 4-bit binary numbers.
+The red lines represent active signals (bits set to 1).
+The result is read at the top , using only 4 bits. (The last carry is ignored.)
+The overflow bit is not visible here.
+baddcircuit_solved
+
+Identified entries
+Starting from the bottom of the diagram:
+
+A = 1110 (14 in decimal)
+B = 0100 (2 in decimal)
+Therefore, we perform the following:
+1110 + 0100 = 10010
+
+But the circuit only displays the 4 least significant bits . So we only read: 0010 on the 4 output bits .
+
+Exit from the circuit
+The value displayed at the top of the circuit (read from left to right) is: 0010.
+
+The flag is therefore:
+
+FCSC{0010}
+Conclusion
+This circuit implements a 4-bit binary adder. By analyzing the active lines (in red) and identifying the inputs and outputs, we deduce that the result is 0010.

@@ -1,0 +1,3 @@
+This is the small entry into the modbus world. We look for the token, and the README tells us that registers 0 to 31 give us the player's token.
+
+We choose to solve it in python, and the doc indicates an opening of the communication by and a reading of the registers by . Don't forget to open the browser on the interface with the token before cutting off the communication. The code is:pyModbusTCPModbusClient()read_holding_registers()

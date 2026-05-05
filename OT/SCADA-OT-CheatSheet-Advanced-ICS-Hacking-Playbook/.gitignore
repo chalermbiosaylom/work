@@ -1,0 +1,271 @@
+# Zenflow task management and worktrees
+.zenflow/
+.zenflow-*
+*/.zenflow/
+zenflow/
+worktrees/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.hypothesis/
+.pytest_cache/
+test-results/
+*.xml
+test_*.pyc
+*_test.pyc
+test_output/
+test_reports/
+.test/
+tests/__pycache__/
+**/test/__pycache__/
+**/tests/__pycache__/
+junit.xml
+test.log
+test_*.log
+*_test.log
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery stuff
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+
+# OS files
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+
+# Logs
+*.log
+logs/
+*.out
+*.err
+
+# PCAP files and network captures
+*.pcap
+*.pcapng
+*.cap
+*.dmp
+captures/
+pcaps/
+network_captures/
+traffic_dumps/
+
+# Config files with sensitive data (uncomment if needed)
+# config.yaml
+# config.json
+# credentials.json
+# secrets.yaml
+
+# Virtual serial ports
+COM[0-9]*
+/dev/tty*
+
+# Compiled binaries
+*.bin
+*.exe
+*.dll
+*.dylib
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Lock files
+*.lock
+.lock
+
+# Node modules (if any JavaScript/TypeScript tools are added)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Certificate files (be careful with these)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Generated documentation
+*.pdf
+*.docx
+
+# Results and exports (from tools)
+results/
+exports/
+output/
+reports/
+analysis/
+analysis_results/
+scan_results/
+exploit_results/
+assessment_results/
+*_results.json
+*_results.txt
+*_results.csv
+*_report.json
+*_report.txt
+*_report.html
+*_report.pdf
+
+# Malware samples (if any are stored for testing)
+samples/
+malware/
+firmware_samples/
+extracted_firmware/
+firmware_extract/
+
+# ICS-specific test artifacts
+plc_backups/
+*.s7p
+*.ap13
+*.ap14
+*.ap15
+*.ap16
+*.acd
+*.ld
+*.st
+*.fbd
+project_backups/
+controller_dumps/
+logic_dumps/
+memory_dumps/
+*.memdump
+
+# Temporary analysis files
+*_analysis.txt
+*_scan.txt
+*_enum.txt
+enumeration_*.txt
+scan_*.txt
+recon_*.txt
